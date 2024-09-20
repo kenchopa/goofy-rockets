@@ -1,0 +1,4 @@
+{
+  "name": "@wgp/errors",
+  "main": "src/index.ts"
+}

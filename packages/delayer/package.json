@@ -1,0 +1,4 @@
+{
+  "name": "@wgp/delayer",
+  "main": "src/index.ts"
+}

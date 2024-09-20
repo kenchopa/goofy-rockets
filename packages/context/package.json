@@ -1,0 +1,4 @@
+{
+  "name": "@wgp/context",
+  "main": "src/index.ts"
+}
