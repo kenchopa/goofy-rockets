@@ -1,13 +1,31 @@
 import logger from '@wgp/logger';
+import http from 'http';
 import Koa from 'koa';
+import { Server as SocketIOServer } from 'socket.io';
 
 import config from './config';
 import initializeMiddleware from './middleware';
+import registerSocketHandlers from './sockets';
 
 const app = new Koa();
 
 // Add the middleware stack
 initializeMiddleware(app);
+
+// Create HTTP server
+const socketHttpServer = http.createServer(app.callback());
+
+// Initialize Socket.IO
+const socketIOServer = new SocketIOServer(socketHttpServer, {
+  cors: {
+    methods: ['GET', 'POST'],
+    // Adjust this for security in production
+    origin: '*',
+  },
+});
+
+// Register socket handlers
+registerSocketHandlers(socketIOServer);
 
 // Graceful shutdown
 const powerOff = () => {

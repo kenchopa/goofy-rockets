@@ -64,4 +64,6 @@ export function createLogger({
   return logger;
 }
 
-export default createLogger();
+const logger = createLogger();
+
+export default logger;
