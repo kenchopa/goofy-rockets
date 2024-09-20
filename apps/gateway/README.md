@@ -1,4 +1,4 @@
-# User Service
+# Gateway Service
 
 The user microservice has `Node.js 18 lts` and uses `TypeScript` to compile.
 This microservice handles operations users, sessions and is used as the authentication server.
@@ -6,7 +6,7 @@ This microservice handles operations users, sessions and is used as the authenti
 ## Environment variables
 
 | Since   | Variable                         | Description                                                                                                                                  | Example                               |
-| ------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+|---------|----------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------|
 | `0.0.1` | `SERVICE_NAME`                   | The service name of the application                                                                                                          | `user`                                |
 | `0.0.1` | `NODE_ENV`                       | The application environment to use                                                                                                           | `'production'`, `'development'`       |
 | `0.0.1` | `PORT`                           | The port the application will run on                                                                                                         | `3000`                                |
@@ -149,19 +149,3 @@ Run lint fix mode
 ```bash
 npm run lint:fix
 ```
-
-# Create a migration
-
-$ npm run migration:create --name=foo
-
-# Generate a migration from schema changes
-
-$ npm run migration:generate --name=bar
-
-# Run migrations and checks for schema changes
-
-$ npm run migration:run
-
-# Revert migrations
-
-$ npm run migration:revert

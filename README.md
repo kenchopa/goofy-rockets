@@ -33,7 +33,7 @@ install a dev dependency on a filtered app
 link a package to an app
 
 ```bash
-    pnpm --filter @wgp/telemetry "add" "@wgp/delayer@workspace:*"
+    pnpm --filter @wgp/gateway "add" "@wgp/delayer@workspace:*"
 ```
 
 run all applications in dev mode
@@ -52,4 +52,10 @@ run a specific app command
 
 ```bash
 pnpm gateway lint
+```
+
+remove a package from an app
+
+```bash
+pnpm gateway remove typeorm reflect-metadata
 ```
