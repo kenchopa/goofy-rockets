@@ -26,7 +26,7 @@ export default function initializeMiddleware(app: Koa) {
   app.use(makeBodyParserMiddleware());
   app.use(makeSecurityHeadersMiddleware());
   app.use(makeValidateMiddleware());
-  app.use(makeHealthMiddleware({ }));
+  app.use(makeHealthMiddleware({}));
   app.use(makeCorrelationMiddleware());
   app.use(router.routes());
   app.use(router.allowedMethods());
