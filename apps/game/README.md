@@ -1,7 +1,7 @@
-# Gateway Service
+# Game
 
-The gateway microservice has `Node.js 20 lts` and uses `TypeScript` to compile.
-This microservice handles socket connections and interactions for the game.
+The Game Client microservice has `Node.js 20 lts` and uses `TypeScript` to compile.
+This microservice serves the game.
 
 ## Environment variables
 

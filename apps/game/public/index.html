@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goofy Rockets</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .multiplier {
+      font-size: 48px;
+      color: green;
+    }
+
+    .crashed {
+      color: red;
+    }
+
+    #betInput {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+    }
+
+    #placeBetBtn,
+    #cashOutBtn {
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      margin: 10px;
+    }
+
+    #placeBetBtn {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    #cashOutBtn {
+      background-color: #f44336;
+      color: white;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Crash Game</h1>
+  <div id="multiplier" class="multiplier">1.00x</div>
+
+  <div>
+    <input type="number" id="betInput" placeholder="Enter bet amount" min="1" />
+    <button id="placeBetBtn">Place Bet</button>
+    <button id="cashOutBtn" disabled>Cash Out</button>
+  </div>
+
+  <div id="message"></div>
+
+  <!-- Socket.IO CDN -->
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+
+  <script>
+    const socket = io();
+    const multiplierDiv = document.getElementById('multiplier');
+    const placeBetBtn = document.getElementById('placeBetBtn');
+    const cashOutBtn = document.getElementById('cashOutBtn');
+    const betInput = document.getElementById('betInput');
+    const messageDiv = document.getElementById('message');
+
+    let hasPlacedBet = false;
+
+    // Update the multiplier in real-time
+    socket.on('multiplierUpdate', (data) => {
+      multiplierDiv.textContent = data.multiplier.toFixed(2) + 'x';
+      multiplierDiv.classList.remove('crashed');
+    });
+
+    // Handle when the game crashes
+    socket.on('gameCrash', (data) => {
+      multiplierDiv.textContent = data.crashPoint + 'x (Crashed!)';
+      multiplierDiv.classList.add('crashed');
+      cashOutBtn.disabled = true;
+      messageDiv.textContent = 'Game crashed! Waiting for the next round...';
+
+      // Reset buttons and bet input for the next round
+      setTimeout(() => {
+        betInput.disabled = false;
+        placeBetBtn.disabled = false;
+        cashOutBtn.disabled = true;
+        messageDiv.textContent = '';
+        hasPlacedBet = false; // Reset the bet state
+      }, 5000); // Reset UI after 5 seconds (or after the game restarts)
+    });
+
+    // Handle successful bet placement
+    socket.on('betSuccess', (data) => {
+      messageDiv.textContent = `Bet placed: ${data.amount}`;
+      placeBetBtn.disabled = true;
+      betInput.disabled = true;
+      cashOutBtn.disabled = false;
+      hasPlacedBet = true;
+    });
+
+    // Handle failed bet placement
+    socket.on('betFailed', (data) => {
+      messageDiv.textContent = `Bet failed: ${data.message}`;
+    });
+
+    // Handle cash-out success
+    socket.on('cashOutSuccess', (data) => {
+      messageDiv.textContent = `Cashed out! Payout: ${data.payout}`;
+      cashOutBtn.disabled = true;
+    });
+
+    // Handle cash-out failure
+    socket.on('cashOutFailed', (data) => {
+      messageDiv.textContent = `Cash-out failed: ${data.message}`;
+    });
+
+    // Handle losing the bet
+    socket.on('playerLost', (data) => {
+      messageDiv.textContent = data.message;
+      placeBetBtn.disabled = false;
+      betInput.disabled = false;
+      cashOutBtn.disabled = true;
+      hasPlacedBet = false;
+    });
+
+    // Place a bet when the button is clicked
+    placeBetBtn.addEventListener('click', () => {
+      const betAmount = parseFloat(betInput.value);
+      if (!isNaN(betAmount) && betAmount > 0) {
+        socket.emit('placeBet', betAmount);
+      } else {
+        messageDiv.textContent = 'Please enter a valid bet amount.';
+      }
+    });
+
+    // Cash out when the button is clicked
+    cashOutBtn.addEventListener('click', () => {
+      if (hasPlacedBet) {
+        socket.emit('cashOut');
+      }
+    });
+  </script>
+</body>
+
+</html>

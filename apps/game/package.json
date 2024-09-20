@@ -1,6 +1,6 @@
 {
-  "name": "@wgp/gateway",
-  "description": "Contains a microservice that acts as gateway for socket.io. for project Goofy Rockets",
+  "name": "@wgp/game",
+  "description": "Contains the game client for project Goofy Rockets",
   "main": "src/index.ts",
   "scripts": {
     "prebuild": "npm run clean",
@@ -16,22 +16,18 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
-    "@wgp/context": "workspace:^",
-    "@wgp/errors": "workspace:^",
     "@wgp/koa": "workspace:^",
     "@wgp/logger": "workspace:*",
-    "@wgp/tracer": "workspace:*",
-    "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "joi": "^17.7.0",
     "koa": "^2.14.1",
-    "moment": "^2.29.4",
-    "opentracing": "^0.14.7",
-    "socket.io": "^4.7.5"
+    "koa-static": "^5.0.0",
+    "moment": "^2.29.4"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/koa": "^2.13.5",
+    "@types/koa-static": "^4.0.4",
     "cross-var": "^1.1.0",
     "rimraf": "^4.1.2"
   }
