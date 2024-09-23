@@ -254,6 +254,35 @@
       rocketMesh.rotation.z = angle;
     }
 
+    // Handle the Place Bet button click
+    placeBetBtn.addEventListener('click', () => {
+      const betAmount = parseFloat(betInput.value);
+      if (isNaN(betAmount) || betAmount <= 0) {
+        messageDiv.textContent = 'Please enter a valid bet amount.';
+        return;
+      }
+
+      // Disable place bet and enable cash out button
+      placeBetBtn.disabled = true;
+      cashOutBtn.disabled = false;
+      betInput.disabled = true;
+      hasPlacedBet = true;
+
+      // Send bet to the server
+      socket.emit('placeBet', betAmount);
+
+      messageDiv.textContent = `Bet placed: ${betAmount}`;
+    });
+
+    // Handle the Cash Out button click
+    cashOutBtn.addEventListener('click', () => {
+      if (hasPlacedBet) {
+        socket.emit('cashOut');
+        cashOutBtn.disabled = true;
+        messageDiv.textContent = 'Cashed out!';
+      }
+    });
+
     socket.on('multiplierUpdate', (data) => {
       multiplierDiv.textContent = data.multiplier.toFixed(2) + 'x';
       multiplierDiv.classList.remove('crashed');
@@ -286,6 +315,39 @@
 
         createRocket();
       }, 5000);
+    });
+
+    // Socket event handlers for bet success, cash out, etc.
+    socket.on('betSuccess', (data) => {
+      messageDiv.textContent = `Bet placed: ${data.amount}`;
+      placeBetBtn.disabled = true;
+      betInput.disabled = true;
+      cashOutBtn.disabled = false;
+      hasPlacedBet = true;
+    });
+
+    socket.on('betFailed', (data) => {
+      messageDiv.textContent = `Bet failed: ${data.message}`;
+      placeBetBtn.disabled = false;
+      betInput.disabled = false;
+      hasPlacedBet = false;
+    });
+
+    socket.on('cashOutSuccess', (data) => {
+      messageDiv.textContent = `Cashed out! Payout: ${data.payout}`;
+      cashOutBtn.disabled = true;
+    });
+
+    socket.on('cashOutFailed', (data) => {
+      messageDiv.textContent = `Cash-out failed: ${data.message}`;
+    });
+
+    socket.on('playerLost', (data) => {
+      messageDiv.textContent = data.message;
+      placeBetBtn.disabled = false;
+      betInput.disabled = false;
+      cashOutBtn.disabled = true;
+      hasPlacedBet = false;
     });
 
     window.addEventListener('load', initThreeJS);

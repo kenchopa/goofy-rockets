@@ -63,6 +63,16 @@ export class PlayerService {
   public getAllPlayers(): { [key: string]: Player } {
     return this.players;
   }
+
+  // Reset a specific player's bet and cash-out status
+  public resetPlayerBet(playerId: string): void {
+    if (this.players[playerId]) {
+      this.players[playerId].betAmount = 0;
+      this.players[playerId].cashedOut = false;
+    } else {
+      throw new Error(`Player ${playerId} not found when resetting bet`);
+    }
+  }
 }
 
 const playerService = new PlayerService();

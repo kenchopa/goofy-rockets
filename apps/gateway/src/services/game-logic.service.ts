@@ -64,6 +64,9 @@ export class GameLogicService {
     server.emit('gameCrash', { crashPoint: this.crashPoint });
     logger.info(`Game Crashed at ${this.crashPoint}x`);
 
+    // Handle players who did not cash out
+    this.handlePlayerLosses(server);
+
     // Restart game after x seconds
     setTimeout(() => {
       this.startGame(server);
@@ -76,6 +79,21 @@ export class GameLogicService {
 
   public getCurrentMultiplier(): number {
     return this.currentMultiplier;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private handlePlayerLosses(server: Server): void {
+    const players = playerService.getAllPlayers();
+    Object.keys(players).forEach((playerId) => {
+      const player = players[playerId];
+      if (!player.cashedOut && player.betAmount > 0) {
+        server
+          .to(playerId)
+          .emit('playerLost', { message: 'You lost your bet!' });
+        logger.info(`Player ${playerId} lost their bet.`);
+        playerService.resetPlayerBet(playerId); // Reset the player's bet
+      }
+    });
   }
 }
 
