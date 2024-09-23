@@ -4,7 +4,8 @@
   "main": "src/index.ts",
   "scripts": {
     "prebuild": "pnpm run clean",
-    "build": "tsc",
+    "build": "tsc && pnpm copy-public",
+    "copy-public": "copyfiles -u 1 public/**/* dist/public",
     "clean": "rimraf dist coverage",
     "debug": "nodemon --watch src --ext js,ts,json --watch .env --delay 80ms --exec 'tsc && NODE_ENV=development node --inspect=0.0.0.0:9229 dist/index.js'",
     "dev": "nodemon --watch .env --delay 80ms --watch src --ext js,ts,json --exec 'NODE_ENV=development ts-node src/index.ts'",
@@ -28,6 +29,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/koa": "^2.13.5",
     "@types/koa-static": "^4.0.4",
+    "copyfiles": "^2.4.1",
     "cross-var": "^1.1.0",
     "rimraf": "^4.1.2"
   }

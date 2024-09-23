@@ -13,7 +13,7 @@
     "build:apps": "pnpm --filter './apps/**' --recursive run build",
     "build": "pnpm run build:packages && pnpm run build:apps",
     "dev": "pnpm --recursive --parallel --stream run dev",
-    "start" : "pnpm --recursive --parallel --stream run start",
+    "start": "pnpm --recursive --parallel --stream run start",
     "lint": "pnpm --recursive --parallel --stream run lint"
   },
   "workspaces": [
@@ -35,7 +35,7 @@
     "eslint-plugin-simple-import-sort": "^9.0.0",
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "nodemon": "^2.0.22",
+    "nodemon": "^3.1.7",
     "prettier": "^2.8.8",
     "rimraf": "^4.1.2",
     "ts-node": "^10.9.1",
