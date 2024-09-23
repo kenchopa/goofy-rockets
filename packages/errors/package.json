@@ -1,4 +1,9 @@
 {
   "name": "@wgp/errors",
-  "main": "src/index.ts"
+  "main": "dist/src/index.js",
+  "scripts": {
+    "prebuild": "pnpm run clean",
+    "build": "tsc",
+    "clean": "rimraf dist coverage"
+  }
 }

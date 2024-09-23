@@ -9,14 +9,14 @@ type App = {
   NODE_ENV: 'development' | 'production' | 'test';
   SERVICE_NAME: string;
   LOG_LEVEL:
-    | 'emerg'
-    | 'alert'
-    | 'crit'
-    | 'error'
-    | 'warning'
-    | 'notice'
-    | 'info'
-    | 'debug';
+  | 'emerg'
+  | 'alert'
+  | 'crit'
+  | 'error'
+  | 'warning'
+  | 'notice'
+  | 'info'
+  | 'debug';
 };
 
 type Config = {

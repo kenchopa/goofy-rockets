@@ -32,13 +32,24 @@ const powerOff = () => {
   process.exit(0);
 };
 
-const shutDown = (application: any, command: string) => {
+const shutDown = (
+  application: any,
+  socketServer: SocketIOServer,
+  command: string,
+) => {
   logger.info(
     `Server shutdown requested (${command}). Finishing up requests and closing down.`,
   );
+
+  // Close the HTTP server
   application.close(() => {
-    logger.info('Successfully closed http server.');
-    powerOff();
+    logger.info('Successfully closed HTTP server.');
+
+    // Close the Socket.IO server
+    socketServer.close(() => {
+      logger.info('Successfully closed Socket.IO server.');
+      powerOff();
+    });
   });
 };
 
@@ -50,14 +61,14 @@ server.listen(config.APP.PORT, () => {
 // Gracefully handle termination signals
 const killSignals = ['SIGTERM', 'SIGINT'] as const;
 killSignals.forEach((signal) =>
-  process.on(signal, () => shutDown(server, signal)),
+  process.on(signal, () => shutDown(server, socketIOServer, signal)),
 );
 
 // When an uncaught exception occurs
 process.on('uncaughtException', (err: Error) => {
   logger.error(err.message);
-  if (server) {
-    shutDown(server, 'SIGINT');
+  if (server && socketIOServer) {
+    shutDown(server, socketIOServer, 'SIGINT');
   } else {
     powerOff();
   }
@@ -66,8 +77,8 @@ process.on('uncaughtException', (err: Error) => {
 // When uncaught promise rejections occur
 process.on('unhandledRejection', (reason: string) => {
   logger.crit(reason);
-  if (server) {
-    shutDown(server, 'SIGINT');
+  if (server && socketIOServer) {
+    shutDown(server, socketIOServer, 'SIGINT');
   } else {
     powerOff();
   }

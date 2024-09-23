@@ -54,10 +54,8 @@
     #gameArea {
       width: 100%;
       height: 400px;
-      /* Adjust the height as needed */
       margin-top: 50px;
       background-color: #000;
-      /* Fallback background color */
     }
   </style>
 </head>
@@ -97,25 +95,20 @@
     let isExploding = false;
     let explosionScale = 0.1;
 
+    let stars = [];
     let hasPlacedBet = false;
 
     // Initialize the Three.js scene
     function initThreeJS() {
-      // Create a scene
       scene = new THREE.Scene();
 
       // Create a camera (PerspectiveCamera)
-      camera = new THREE.PerspectiveCamera(
-        75, // Field of view
-        window.innerWidth / 400, // Aspect ratio (adjusted for the #gameArea height)
-        0.1, // Near clipping plane
-        1000 // Far clipping plane
-      );
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
       camera.position.z = 5;
 
       // Create a renderer and add it to the #gameArea
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setSize(window.innerWidth, 400); // Width x Height
+      renderer.setSize(window.innerWidth, 400);
       document.getElementById('gameArea').appendChild(renderer.domElement);
 
       // Add lighting
@@ -126,6 +119,9 @@
       // Create the rocket
       createRocket();
 
+      // Create stars
+      createStars();
+
       // Start the animation loop
       animate();
     }
@@ -134,20 +130,17 @@
     function createRocket() {
       const rocketGroup = new THREE.Group();
 
-      // Rocket body (Cylinder)
       const bodyGeometry = new THREE.CylinderGeometry(0.2, 0.2, 2, 32);
       const bodyMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
       const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
       rocketGroup.add(body);
 
-      // Rocket nose (Cone)
       const noseGeometry = new THREE.ConeGeometry(0.2, 0.5, 32);
       const noseMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
       const nose = new THREE.Mesh(noseGeometry, noseMaterial);
       nose.position.y = 1.25;
       rocketGroup.add(nose);
 
-      // Rocket fins (using BoxGeometry)
       const finGeometry = new THREE.BoxGeometry(0.1, 0.5, 0.05);
       const finMaterial = new THREE.MeshLambertMaterial({ color: 0x0000ff });
 
@@ -159,25 +152,53 @@
       fin2.position.set(-0.25, -1, 0);
       rocketGroup.add(fin2);
 
-      // Set the initial position
-      rocketGroup.position.x = -5; // Start from the left side
-
-      // Rotate the rocket to be horizontal
+      rocketGroup.position.x = -5;
       rocketGroup.rotation.z = Math.PI / 2;
-
-      // Add to the scene
       scene.add(rocketGroup);
 
       rocketMesh = rocketGroup;
     }
 
+    // Function to create twinkling stars
+    function createStars() {
+      const starGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+      const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+      const numStars = 150; // Adjust as needed
+      const canvasWidth = window.innerWidth / 10; // Adjust based on canvas width
+      const canvasHeight = 10; // Adjust to control vertical star spread
+
+      for (let i = 0; i < numStars; i++) {
+        const star = new THREE.Mesh(starGeometry, starMaterial);
+        star.position.set(
+          Math.random() * canvasWidth * 2 - canvasWidth, // X position spans the entire canvas width
+          Math.random() * canvasHeight - canvasHeight / 2, // Y position stays between the canvas height
+          Math.random() * -5 - 1   // Z position for depth
+        );
+        star.material.opacity = Math.random(); // Set random opacity for twinkling effect
+        star.material.transparent = true;
+        scene.add(star);
+        stars.push(star);
+      }
+    }
+
+    // Animate stars to twinkle
+    function animateStars() {
+      stars.forEach(star => {
+        star.material.opacity += (Math.random() - 0.5) * 0.05; // Random flicker effect
+        star.material.opacity = Math.max(0, Math.min(1, star.material.opacity)); // Clamp between 0 and 1
+      });
+    }
+
     // Function to create an explosion effect
     function createExplosion(x, y) {
-      // Create a sphere
-      const geometry = new THREE.SphereGeometry(0.1, 32, 32);
+      // Create a sphere for explosion
+      const geometry = new THREE.SphereGeometry(0.5, 32, 32);
       const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
       explosionMesh = new THREE.Mesh(geometry, material);
       explosionMesh.position.set(x, y, 0);
+      explosionMesh.material.transparent = true; // Enable transparency for fade out effect
+      explosionMesh.material.opacity = 1; // Start fully opaque
       scene.add(explosionMesh);
 
       // Start explosion animation
@@ -189,170 +210,84 @@
     function animate() {
       requestAnimationFrame(animate);
 
-      // Optional: Add rotation for a more dynamic effect
-      if (rocketMesh) {
-        //rocketMesh.rotation.y += 0.01; // Commented out to prevent unwanted rotation
-      }
-
-      // Handle explosion animation
       if (isExploding && explosionMesh) {
         explosionScale += 0.2;
         explosionMesh.scale.set(explosionScale, explosionScale, explosionScale);
-
-        // Fade out
         explosionMesh.material.opacity = 1 - (explosionScale / 5);
         explosionMesh.material.transparent = true;
 
         if (explosionScale > 5) {
-          // End explosion
           isExploding = false;
           scene.remove(explosionMesh);
         }
       }
 
+      // Update star twinkling
+      animateStars();
+
       // Render the scene
       renderer.render(scene, camera);
     }
 
-    // Function to update the rocket's position
+    // Function to update the rocket's position along a smooth curve
     function updateRocketPosition(multiplier) {
       if (!rocketMesh) return;
 
-      // Parameters for the curve
-      const maxDistance = 10; // Total horizontal distance
-      const maxMultiplier = 10;
-      const amplitude = 2; // Amplitude of the sine wave
-      const frequency = 1; // Frequency of the sine wave
+      const maxDistance = 10;
+      const amplitude = 1.5;
+      const frequency = 0.6;
 
-      // Calculate normalized time based on the multiplier
-      const t = (Math.log(multiplier) / Math.log(maxMultiplier));
-      const positionX = t * maxDistance - 5; // Range from -5 to +5
+      const t = Math.log(multiplier) / Math.log(10);
+      const positionX = t * maxDistance - 5;
       const positionY = amplitude * Math.sin(frequency * positionX);
 
       rocketMesh.position.x = positionX;
       rocketMesh.position.y = positionY;
 
-      // Calculate the angle of the tangent to the curve for rotation
-      const delta = 0.01; // Small change in x to compute derivative
+      const delta = 0.01;
       const x1 = positionX;
       const y1 = amplitude * Math.sin(frequency * x1);
       const x2 = x1 + delta;
       const y2 = amplitude * Math.sin(frequency * x2);
 
       const angle = Math.atan2(y2 - y1, x2 - x1);
-
-      // Rotate the rocket to align with the tangent
       rocketMesh.rotation.z = angle;
-
-      // Optional: Keep the rocket upright in the z-axis
-      // rocketMesh.rotation.x = 0;
-      // rocketMesh.rotation.y = 0;
     }
 
-    // Handle window resize
-    window.addEventListener('resize', onWindowResize);
-
-    function onWindowResize() {
-      camera.aspect = window.innerWidth / 400;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, 400);
-    }
-
-    // Update the multiplier and rocket position in real-time
     socket.on('multiplierUpdate', (data) => {
       multiplierDiv.textContent = data.multiplier.toFixed(2) + 'x';
       multiplierDiv.classList.remove('crashed');
-
-      // Update rocket position
       updateRocketPosition(data.multiplier);
     });
 
-    // Handle when the game crashes
     socket.on('gameCrash', (data) => {
       multiplierDiv.textContent = data.crashPoint + 'x (Crashed!)';
       multiplierDiv.classList.add('crashed');
       cashOutBtn.disabled = true;
       messageDiv.textContent = 'Game crashed! Waiting for the next round...';
 
-      // Create an explosion at the last position
       if (rocketMesh) {
         createExplosion(rocketMesh.position.x, rocketMesh.position.y);
-        // Remove the rocket from the scene
         scene.remove(rocketMesh);
         rocketMesh = null;
       }
 
-      // Reset rocket position after a delay
       setTimeout(() => {
         betInput.disabled = false;
         placeBetBtn.disabled = false;
         cashOutBtn.disabled = true;
         messageDiv.textContent = '';
-        hasPlacedBet = false; // Reset the bet state
+        hasPlacedBet = false;
 
-        // Remove explosion if still present
         if (explosionMesh) {
           scene.remove(explosionMesh);
           explosionMesh = null;
         }
 
-        // Recreate the rocket
         createRocket();
-      }, 5000); // Adjust the delay as needed
+      }, 5000);
     });
 
-    // Handle successful bet placement
-    socket.on('betSuccess', (data) => {
-      messageDiv.textContent = `Bet placed: ${data.amount}`;
-      placeBetBtn.disabled = true;
-      betInput.disabled = true;
-      cashOutBtn.disabled = false;
-      hasPlacedBet = true;
-    });
-
-    // Handle failed bet placement
-    socket.on('betFailed', (data) => {
-      messageDiv.textContent = `Bet failed: ${data.message}`;
-    });
-
-    // Handle cash-out success
-    socket.on('cashOutSuccess', (data) => {
-      messageDiv.textContent = `Cashed out! Payout: ${data.payout}`;
-      cashOutBtn.disabled = true;
-    });
-
-    // Handle cash-out failure
-    socket.on('cashOutFailed', (data) => {
-      messageDiv.textContent = `Cash-out failed: ${data.message}`;
-    });
-
-    // Handle losing the bet
-    socket.on('playerLost', (data) => {
-      messageDiv.textContent = data.message;
-      placeBetBtn.disabled = false;
-      betInput.disabled = false;
-      cashOutBtn.disabled = true;
-      hasPlacedBet = false;
-    });
-
-    // Place a bet when the button is clicked
-    placeBetBtn.addEventListener('click', () => {
-      const betAmount = parseFloat(betInput.value);
-      if (!isNaN(betAmount) && betAmount > 0) {
-        socket.emit('placeBet', betAmount);
-      } else {
-        messageDiv.textContent = 'Please enter a valid bet amount.';
-      }
-    });
-
-    // Cash out when the button is clicked
-    cashOutBtn.addEventListener('click', () => {
-      if (hasPlacedBet) {
-        socket.emit('cashOut');
-      }
-    });
-
-    // Initialize Three.js when the window loads
     window.addEventListener('load', initThreeJS);
   </script>
 </body>

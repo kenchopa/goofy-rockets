@@ -3,17 +3,17 @@
   "description": "Contains a microservice that acts as gateway for socket.io. for project Goofy Rockets",
   "main": "src/index.ts",
   "scripts": {
-    "prebuild": "npm run clean",
+    "prebuild": "pnpm run clean",
     "build": "tsc",
     "clean": "rimraf dist coverage",
     "debug": "nodemon --watch src --ext js,ts,json --watch .env --delay 80ms --exec 'tsc && NODE_ENV=development node --inspect=0.0.0.0:9229 dist/index.js'",
     "dev": "nodemon --watch .env --delay 80ms --watch src --ext js,ts,json --exec 'NODE_ENV=development ts-node src/index.ts'",
-    "prestart": "npm run build",
-    "start": "NODE_ENV=production node dist/index.js",
+    "prestart": "pnpm run build",
+    "start": "NODE_ENV=production node dist/src/index.js",
     "test": "NODE_ENV=test jest --no-coverage --runInBand",
     "test:coverage": "NODE_ENV=test jest",
     "lint": "eslint src/**/* --ext js,ts",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "pnpm run lint -- --fix"
   },
   "dependencies": {
     "@wgp/context": "workspace:^",
