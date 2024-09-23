@@ -37,6 +37,10 @@ export class PlayerService {
 
   // Place a bet for a player
   public placeBet(playerId: string, amount: number): void {
+    if (!this.players[playerId]) {
+      throw new Error('Player not found when placing bet');
+    }
+
     if (this.players[playerId]) {
       this.players[playerId].betAmount = amount;
       this.players[playerId].cashedOut = false;
@@ -44,14 +48,15 @@ export class PlayerService {
   }
 
   // Cash out a player's bet
-  public cashOut(playerId: string, currentMultiplier: number): number | null {
+  public cashOut(playerId: string, currentMultiplier: number): number {
     const player = this.players[playerId];
     if (player && player.betAmount > 0 && !player.cashedOut) {
       const payout = player.betAmount * currentMultiplier;
       player.cashedOut = true;
       return payout;
     }
-    return null; // Return null if the player can't cash out
+
+    throw new Error(`Unable to cash out for player ${playerId}`);
   }
 
   // Get all players (for debugging or administrative purposes)
@@ -60,4 +65,6 @@ export class PlayerService {
   }
 }
 
-export default new PlayerService();
+const playerService = new PlayerService();
+
+export default playerService;

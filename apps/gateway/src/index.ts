@@ -12,15 +12,14 @@ const app = new Koa();
 // Add the middleware stack
 initializeMiddleware(app);
 
-// Create HTTP server
-const socketHttpServer = http.createServer(app.callback());
+// Create a single HTTP server
+const server = http.createServer(app.callback());
 
-// Initialize Socket.IO
-const socketIOServer = new SocketIOServer(socketHttpServer, {
+// Initialize Socket.IO with the same server
+const socketIOServer = new SocketIOServer(server, {
   cors: {
     methods: ['GET', 'POST'],
-    // Adjust this for security in production
-    origin: '*',
+    origin: '*', // Adjust this for security in production
   },
 });
 
@@ -33,7 +32,6 @@ const powerOff = () => {
   process.exit(0);
 };
 
-// Graceful shutdown of the server
 const shutDown = (application: any, command: string) => {
   logger.info(
     `Server shutdown requested (${command}). Finishing up requests and closing down.`,
@@ -44,17 +42,18 @@ const shutDown = (application: any, command: string) => {
   });
 };
 
-const server = app.listen(config.APP.PORT, () => {
+// Start the unified HTTP and Socket.IO server
+server.listen(config.APP.PORT, () => {
   logger.info(`Server listening on port "${config.APP.PORT}".`);
 });
 
+// Gracefully handle termination signals
 const killSignals = ['SIGTERM', 'SIGINT'] as const;
 killSignals.forEach((signal) =>
   process.on(signal, () => shutDown(server, signal)),
 );
 
-// When uncaught exception occurs,
-// handle the error safely as a last resort
+// When an uncaught exception occurs
 process.on('uncaughtException', (err: Error) => {
   logger.error(err.message);
   if (server) {
@@ -64,8 +63,7 @@ process.on('uncaughtException', (err: Error) => {
   }
 });
 
-// When uncaught promises rejections occurs,
-// handle the error safely as a last resort
+// When uncaught promise rejections occur
 process.on('unhandledRejection', (reason: string) => {
   logger.crit(reason);
   if (server) {

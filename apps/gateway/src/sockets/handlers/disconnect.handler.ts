@@ -1,10 +1,14 @@
 import logger from '@wgp/logger';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
-export default function registerDisconnectHandler(socket: Socket) {
+import playerService from '../../services/player.service';
+
+export default function registerDisconnectHandler(
+  server: Server,
+  socket: Socket,
+) {
   socket.on('disconnect', () => {
+    playerService.removePlayer(socket.id);
     logger.info(`Player "${socket.id}" disconnected.`);
-
-    // TODO EMIT player connected event to rabbitmq
   });
 }

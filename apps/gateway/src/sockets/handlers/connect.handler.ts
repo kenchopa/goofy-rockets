@@ -1,8 +1,15 @@
 import logger from '@wgp/logger';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
-export default function registerConnectHandler(socket: Socket) {
+import gameLogicService from '../../services/game-logic.service';
+import playerService from '../../services/player.service';
+
+export default function registerConnectHandler(server: Server, socket: Socket) {
+  playerService.addPlayer(socket.id);
   logger.info(`Player "${socket.id}" connected.`);
 
-  // TODO EMIT player connected event to rabbitmq
+  // when a player connects, start the game if it's not already running
+  if (!gameLogicService.isRunning()) {
+    gameLogicService.startGame(server);
+  }
 }
