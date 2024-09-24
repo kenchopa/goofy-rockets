@@ -16,6 +16,7 @@
     "lint:fix": "pnpm run lint -- --fix"
   },
   "dependencies": {
+    "@socket.io/redis-streams-adapter": "^0.2.2",
     "@wgp/context": "workspace:^",
     "@wgp/errors": "workspace:^",
     "@wgp/koa": "workspace:^",
@@ -26,6 +27,7 @@
     "joi": "^17.7.0",
     "koa": "^2.14.1",
     "opentracing": "^0.14.7",
+    "redis": "^4.7.0",
     "socket.io": "^4.7.5"
   },
   "devDependencies": {

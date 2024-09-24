@@ -3,20 +3,22 @@ import 'dotenv/config';
 import logger from '@wgp/logger';
 import Joi from 'joi';
 
+type LogLevel =
+  | 'emerg'
+  | 'alert'
+  | 'crit'
+  | 'error'
+  | 'warning'
+  | 'notice'
+  | 'info'
+  | 'debug';
+
 type App = {
   DOCS_URI: string;
   PORT: number;
   NODE_ENV: 'development' | 'production' | 'test';
   SERVICE_NAME: string;
-  LOG_LEVEL:
-    | 'emerg'
-    | 'alert'
-    | 'crit'
-    | 'error'
-    | 'warning'
-    | 'notice'
-    | 'info'
-    | 'debug';
+  LOG_LEVEL: LogLevel;
 };
 
 type RabbitMQ = {
@@ -29,9 +31,17 @@ type RabbitMQ = {
   HEARTBEAT: number;
 };
 
+type Redis = {
+  HOST: string;
+  PASSWORD: string;
+  DB: number;
+  PORT: number;
+};
+
 type Config = {
   APP: App;
   RABBITMQ: RabbitMQ;
+  REDIS: Redis;
 };
 
 const configSchema = Joi.object({
@@ -46,6 +56,10 @@ const configSchema = Joi.object({
   RABBITMQ_PORT: Joi.number().required(),
   RABBITMQ_USER: Joi.string().required(),
   RABBITMQ_VHOST: Joi.string().required(),
+  REDIS_DB: Joi.number().default(0),
+  REDIS_HOST: Joi.string().required(),
+  REDIS_PASSWORD: Joi.string().required(),
+  REDIS_PORT: Joi.number().default(6379),
   SERVICE_NAME: Joi.string().required(),
 });
 
@@ -64,6 +78,10 @@ const {
     RABBITMQ_EXCHANGE,
     RABBITMQ_HEARTBEAT_SEC,
     SERVICE_NAME,
+    REDIS_HOST,
+    REDIS_PORT,
+    REDIS_PASSWORD,
+    REDIS_DB,
   },
 } = configSchema.validate(process.env, {
   abortEarly: false,
@@ -93,6 +111,12 @@ const config: Config = {
     PORT: RABBITMQ_PORT,
     USER: RABBITMQ_USER,
     VHOST: RABBITMQ_VHOST,
+  },
+  REDIS: {
+    DB: REDIS_DB,
+    HOST: REDIS_HOST,
+    PASSWORD: REDIS_PASSWORD,
+    PORT: REDIS_PORT,
   },
 };
 
