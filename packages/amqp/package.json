@@ -1,0 +1,20 @@
+{
+  "name": "@wgp/amqp",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "prebuild": "pnpm run clean",
+    "build": "tsc",
+    "clean": "rimraf dist coverage"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.5",
+    "type-fest": "^4.26.1"
+  },
+  "dependencies": {
+    "@wgp/context": "workspace:^",
+    "@wgp/delayer": "workspace:^",
+    "@wgp/errors": "workspace:^",
+    "@wgp/logger": "workspace:^",
+    "amqplib": "^0.10.4"
+  }
+}

@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@socket.io/redis-streams-adapter": "^0.2.2",
+    "@wgp/amqp": "workspace:^",
     "@wgp/context": "workspace:^",
     "@wgp/errors": "workspace:^",
     "@wgp/koa": "workspace:^",
