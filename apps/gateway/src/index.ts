@@ -26,7 +26,20 @@ const startServer = async () => {
 
   // Setup RabbitMQ
   setupRabbitMQ((channel) =>
-    Promise.all([installQueueRouter(channel, 'queueName', ['routingKey'])]),
+    Promise.all([
+      installQueueRouter(
+        channel,
+        {
+          exchange: 'wo-out',
+          name: 'game.multiplier.updated',
+        },
+        {
+          'game.multiplier.updated': async (message) => {
+            logger.info('Received message:', message);
+          },
+        },
+      ),
+    ]),
   );
 
   // Create a single HTTP server
