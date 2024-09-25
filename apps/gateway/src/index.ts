@@ -1,4 +1,5 @@
 import { createAdapter } from '@socket.io/redis-streams-adapter';
+import { installQueueRouter, setupRabbitMQ } from '@wgp/amqp';
 import logger from '@wgp/logger';
 import http from 'http';
 import Koa from 'koa';
@@ -15,12 +16,18 @@ const startServer = async () => {
   // Add the middleware stack
   initializeMiddleware(app);
 
+  // Setup Redis
   try {
     await connectRedis();
   } catch (error) {
     logger.error('Failed to connect to Redis', error);
     process.exit(1); // Exit the process if Redis connection fails
   }
+
+  // Setup RabbitMQ
+  setupRabbitMQ((channel) =>
+    Promise.all([installQueueRouter(channel, 'queueName', ['routingKey'])]),
+  );
 
   // Create a single HTTP server
   const server = http.createServer(app.callback());
