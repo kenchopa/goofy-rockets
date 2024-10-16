@@ -6,7 +6,7 @@
     "prebuild": "pnpm run clean",
     "build": "tsc",
     "clean": "rimraf dist coverage",
-    "debug": "nodemon --watch src --ext js,ts,json --watch .env --delay 80ms --exec 'tsc && cross-env NODE_ENV=development node --inspect=0.0.0.0:9229 dist/index.js'",
+    "debug": "cross-env nodemon --watch src --ext js,ts,json --watch .env --delay 80ms --exec 'tsc && cross-env NODE_ENV=development node --inspect=0.0.0.0:9229 dist/index.js'",
     "dev": "cross-env nodemon --watch .env --delay 80ms --watch src --ext js,ts,json --exec 'cross-env NODE_ENV=development ts-node src/index.ts'",
     "prestart": "pnpm run build",
     "start": "cross-env NODE_ENV=production node dist/src/index.js",
@@ -32,6 +32,7 @@
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
-    "@types/koa": "^2.13.5"
+    "@types/koa": "^2.13.5",
+    "cross-env": "^7.0.3"
   }
 }

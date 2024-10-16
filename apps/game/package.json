@@ -4,7 +4,6 @@
   "main": "src/index.ts",
   "scripts": {
     "prebuild": "pnpm run clean",
-    "build": "tsc && pnpm copy-public",
     "copy-public": "copyfiles -u 1 public/**/* dist/public",
     "clean": "rimraf dist coverage",
     "debug": "nodemon --watch src --ext js,ts,json --watch .env --delay 80ms --exec 'tsc && cross-env NODE_ENV=development node --inspect=0.0.0.0:9229 dist/index.js'",

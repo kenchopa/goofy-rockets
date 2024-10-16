@@ -238,6 +238,9 @@ importers:
       '@types/koa':
         specifier: ^2.13.5
         version: 2.15.0
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
 
   apps/room:
     dependencies:
@@ -281,6 +284,9 @@ importers:
       '@types/koa':
         specifier: ^2.13.5
         version: 2.15.0
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
 
   apps/round:
     dependencies:
@@ -324,6 +330,9 @@ importers:
       '@types/koa':
         specifier: ^2.13.5
         version: 2.15.0
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
 
   packages/amqp:
     dependencies:
