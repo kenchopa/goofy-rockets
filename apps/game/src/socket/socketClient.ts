@@ -14,11 +14,6 @@ export class SocketClient {
   ) { }
 
   public init(uri: string): void {
-    this.context.eventContainer.events.onAdd =
-      this.onSocketEventAdded.bind(this);
-    this.context.eventContainer.events.onRemove =
-      this.onSocketEventRemoved.bind(this);
-
     this.socket = io(uri, {
       autoConnect: false,
       reconnection: false,
@@ -30,23 +25,24 @@ export class SocketClient {
     });
   }
 
-  private onSocketEventAdded(event: SocketEvent): void {
+  public addSocketEvent(event: SocketEvent): void {
     if (!this.socket) {
       return;
     }
-    this.socket.on(event.id, event.handler);
+    console.log('adding socket event', event.eventName);
+    this.socket.on(event.eventName, event.handler.bind(event));
   }
 
-  private onSocketEventRemoved(event: SocketEvent): void {
+  public removeSocketEvent(event: SocketEvent): void {
     if (!this.socket) {
       return;
     }
-    this.socket.off(event.id, event.handler);
+    this.socket.off(event.eventName, event.handler);
   }
 
   public onConnect(): void {
     this.context.eventContainer.socketEvents.forEach((v) => {
-      this.socket!.on(v.id, v.handler);
+      this.socket!.on(v.eventName, v.handler);
     });
   }
 

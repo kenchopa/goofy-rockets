@@ -1,5 +1,7 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-console */
 /* eslint-disable import/prefer-default-export */
+import { SocketEventResponse } from '@wgp/domain';
 import _ from 'lodash';
 
 import { SocketMessageContainer } from './socketMessageContainer';
@@ -10,7 +12,7 @@ export class SocketMessageConsumer {
     private context: { socketMessageContainer: SocketMessageContainer },
   ) { }
 
-  public consumeMessage(msg: unknown): void {
+  public consumeMessage(msg: SocketEventResponse): void {
     if (!_.has(msg, 'correlationId') || !_.has(msg, 'data')) {
       console.error(
         `message received without correlationId present, ${JSON.stringify(
@@ -19,22 +21,25 @@ export class SocketMessageConsumer {
       );
       return;
     }
-    const payloadMessage = msg as { correlationId: string; data: unknown };
     const pendingMessage =
       this.context.socketMessageContainer.findPendingMessage(
-        payloadMessage.correlationId,
-      );
-    pendingMessage.messages.push(payloadMessage.data);
+        msg.correlationId,
+      )!;
 
-    // TODO check required responses and resolve if all are received
-    /*
-    pendingMessage.forEach((v) => {
-      v.resolver({ ok: true, result: payloadMessage.data });
-    });
-    */
-    this.context.socketMessageContainer.removePendingMessage(
-      payloadMessage.correlationId,
+    pendingMessage.messages.push(msg);
+
+    const allReceivedMessageEvents = _.map(
+      pendingMessage.messages,
+      (v) => v.event,
     );
+    for (let i = 0; i < pendingMessage.requiredResponses.length; i++) {
+      const requiredResponse = pendingMessage.requiredResponses[i];
+      if (!allReceivedMessageEvents.includes(requiredResponse)) {
+        return;
+      }
+    }
+    pendingMessage.resolver(pendingMessage.messages);
+    this.context.socketMessageContainer.removePendingMessage(pendingMessage.id);
   }
   /*
   public consumeError(msg: unknown): void {
