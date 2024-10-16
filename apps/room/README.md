@@ -1,6 +1,6 @@
-# Gateway Service
+# Room Service
 
-The gateway microservice has `Node.js 20 lts` and uses `TypeScript` to compile.
+The Room microservice has `Node.js 20 lts` and uses `TypeScript` to compile.
 This microservice handles socket connections and interactions for the game.
 
 ## Environment variables
