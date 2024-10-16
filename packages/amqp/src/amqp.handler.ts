@@ -129,3 +129,66 @@ export async function checkQueue(queue: QueueName) {
 
   return channel.checkQueue(queue);
 }
+
+// Define the type for headers
+export type MessageHeaders = {
+  correlationId?: string; // A unique ID to track the message
+  contentType?: string; // e.g., 'application/json'
+  appId?: string; // The ID of the application publishing the message
+  messageId?: string; // Unique ID for the message itself
+  timestamp?: number; // Timestamp of when the message was created
+  [key: string]: string | number | undefined; // Allows for additional headers
+};
+
+export interface JSONObject {
+  [key: string]: string | number | boolean | null | JSONObject | JSONArray;
+}
+
+export interface JSONArray
+  // eslint-disable-next-line prettier/prettier
+  extends Array<string | number | boolean | null | JSONObject | JSONArray> { }
+
+// Define the type for the message payload which must always be an object (key-value)
+export type MessagePayload = JSONObject;
+
+export const publishMessage = async (
+  exchange: string,
+  routingKey: string,
+  message: MessagePayload,
+  headers?: MessageHeaders,
+  options = { persistent: true },
+): Promise<void> => {
+  if (!channel) {
+    throw new Error('No channel available for publishing messages.');
+  }
+
+  return new Promise((resolve, reject) => {
+    try {
+      const messageBuffer = Buffer.from(JSON.stringify(message));
+      const publishOptions = { ...options, headers };
+
+      const success = channel.publish(
+        exchange,
+        routingKey,
+        messageBuffer,
+        publishOptions,
+      );
+
+      if (!success) {
+        // When publish returns false, we can handle backpressure
+        channel.once('drain', resolve);
+      } else {
+        resolve();
+      }
+
+      logger.info(
+        `Message published to exchange '${exchange}' with routing key '${routingKey}'`,
+      );
+    } catch (error) {
+      logger.error(`Failed to publish message to exchange '${exchange}'`, {
+        errorMessage: (error as Error).message,
+      });
+      reject(error);
+    }
+  });
+};
