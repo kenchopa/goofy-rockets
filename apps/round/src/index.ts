@@ -3,6 +3,7 @@ import logger from '@wgp/logger';
 import Koa from 'koa';
 
 import config from './config';
+import handleRoomCreated from './handlers/room-created.handler';
 import { connectRedis } from './infrastructure/redis.client';
 import initializeMiddleware from './middleware';
 
@@ -27,12 +28,10 @@ const startServer = async () => {
         channel,
         {
           exchange: 'wo-in',
-          name: 'round.room_created',
+          name: 'round.room-created',
         },
         {
-          'room.created': async (message) => {
-            logger.info('Received message:', message);
-          },
+          'room.created': handleRoomCreated,
         },
       ),
     ]),
