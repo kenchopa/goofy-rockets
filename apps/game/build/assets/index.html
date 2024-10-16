@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goofy Rockets</title>
+  <script src="./index.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .multiplier {
+      font-size: 48px;
+      color: green;
+    }
+
+    .crashed {
+      color: red;
+    }
+
+    #betInput {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+    }
+
+    #placeBetBtn,
+    #cashOutBtn {
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      margin: 10px;
+    }
+
+    #placeBetBtn {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    #cashOutBtn {
+      background-color: #f44336;
+      color: white;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    /* Game Area Styles */
+    #gameArea {
+      width: 100%;
+      height: 400px;
+      margin-top: 50px;
+      background-color: #000;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Goofy Rockets</h1>
+  <div id="multiplier" class="multiplier">1.00x</div>
+
+  <div>
+    <input type="number" id="betInput" placeholder="Enter bet amount" min="1" />
+    <button id="placeBetBtn">Place Bet</button>
+    <button id="cashOutBtn" disabled>Cash Out</button>
+  </div>
+
+  <div id="message"></div>
+
+  <!-- Canvas Container -->
+  <div id="gameArea"></div>
+</body>
+
+</html>

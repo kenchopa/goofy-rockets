@@ -1,0 +1,3 @@
+/* eslint-disable import/prefer-default-export */
+export const playerSessionToken =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnaWQiOiJnb29meS1yb2NrZXRzIiwidWlkIjoiZDNhNzNlMjUtNjNhYy00ZjRhLWE5ZjgtZDVjMzhmMjI4YzIwIiwiaWF0IjoxNzI5MDg4NTM0fQ.ca9YycZEHItMYA8yUAW3yviNz0SU6B5KQMML4a6Z7UU';

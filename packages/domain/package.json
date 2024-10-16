@@ -1,0 +1,9 @@
+{
+  "name": "@wgp/domain",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "prebuild": "pnpm run clean",
+    "build": "tsc",
+    "clean": "rimraf dist coverage"
+  }
+}
