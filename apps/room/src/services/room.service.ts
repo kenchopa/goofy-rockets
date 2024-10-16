@@ -15,7 +15,7 @@ export class RoomService {
 
   // Add a new room
   public addRoom(roomId: string, gameId: string): void {
-    this.rooms[roomId] = { roomId, gameId, playerIds: [] };
+    this.rooms[roomId] = { gameId, playerIds: [], roomId };
   }
 
   // Get a player's data
@@ -30,7 +30,9 @@ export class RoomService {
 
   // Remove a player
   public removePlayer(roomId: string, playerId: string): void {
-    this.rooms[roomId].playerIds = this.rooms[roomId].playerIds.filter(id => id !== playerId);
+    this.rooms[roomId].playerIds = this.rooms[roomId].playerIds.filter(
+      (id) => id !== playerId,
+    );
   }
 }
 

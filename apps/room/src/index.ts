@@ -13,7 +13,7 @@ const startServer = async () => {
   initializeMiddleware(app);
 
   // Setup RabbitMQ
-  setupRabbitMQ((channel) =>
+  await setupRabbitMQ((channel) =>
     Promise.all([
       installQueueRouter(
         channel,
