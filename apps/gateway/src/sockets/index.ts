@@ -1,6 +1,7 @@
 import { Server, Socket } from 'socket.io';
 
 import { publishMessage } from '@wgp/amqp';
+import logger from '@wgp/logger';
 
 import config from '../config';
 
@@ -17,7 +18,7 @@ const registerSocketHandlers = (server: Server) => {
 
   server.of("/").adapter.on("create-room", async (room) => {
     if (room.includes('wgp:')) {
-      console.log(`room ${room} was created`);
+      logger.info(`room ${room} was created`);
 
       const RoomCreatedRoutingKey = 'room.created';
 
@@ -35,7 +36,7 @@ const registerSocketHandlers = (server: Server) => {
   
   server.of("/").adapter.on("join-room", async (room, id) => {
     if (room.includes('wgp:')) {
-      console.log(`socket ${id} has joined room ${room}`);
+      logger.info(`socket ${id} has joined room ${room}`);
 
       const RoomPlayerJoinedRoutingKey = 'room.player-joined';
 
@@ -54,7 +55,7 @@ const registerSocketHandlers = (server: Server) => {
 
   server.of("/").adapter.on("leave-room", async (room, id) => {
     if (room.includes('wgp:')) {
-      console.log(`socket ${id} has left room ${room}`);
+      logger.info(`socket ${id} has left room ${room}`);
 
       const RoomPlayerLeftRoutingKey = 'room.player-left';
 
@@ -73,7 +74,7 @@ const registerSocketHandlers = (server: Server) => {
 
   server.of("/").adapter.on("delete-room", async (room) => {
     if (room.includes('wgp:')) {
-      console.log(`room ${room} was deleted`);
+      logger.info(`room ${room} was deleted`);
 
       const RoomDeletedRoutingKey = 'room.deleted';
 
