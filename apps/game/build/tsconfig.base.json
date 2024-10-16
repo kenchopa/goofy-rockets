@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "noEmitHelpers": true,
+        "importHelpers": true,
+        "sourceMap": true,
+        "strict": true,
+        "allowJs": true,
+        "noResolve": false,
+        "moduleResolution": "node",
+        "typeRoots": ["./types", "../node_modules/@types", "../node_modules/@gp-types"],
+        "lib": ["ES5", "ES6", "ES2017", "ES2018", "ES2019", "ESNext", "DOM"]
+    },
+    "include": ["../src/**/*.ts", "./types/**/*.ts"]
+}

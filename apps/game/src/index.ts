@@ -1,61 +1,32 @@
-import logger from '@wgp/logger';
-import Koa from 'koa';
-import serve from 'koa-static';
-import path from 'path';
+import { AppContext } from './app/appContext';
+import { AppService } from './app/appService';
+import { GameInitializedEvent } from './socket/events/gameInitializedEvent';
+import { SocketContext } from './socket/socketContext';
+import { SocketService } from './socket/socketService';
 
-import config from './config';
+async function createApp(): Promise<AppService> {
+  const context = new AppContext();
 
-const app = new Koa();
+  await context.init();
+  return new AppService(context);
+}
 
-// Serve static HTML files from the "public" directory
-const publicPath = path.join(__dirname, '..', 'public');
-logger.info(`Serving static files from "${publicPath}".`);
-app.use(serve(publicPath));
+async function createSocket(): Promise<SocketService> {
+  const context = new SocketContext();
 
-// Graceful shutdown
-const powerOff = () => {
-  logger.info('Shutting down...');
-  process.exit(0);
-};
+  context.socketEventContainer.add(new GameInitializedEvent(context));
 
-// Graceful shutdown of the server
-const shutDown = (application: any, command: string) => {
-  logger.info(
-    `Server shutdown requested (${command}). Finishing up requests and closing down.`,
-  );
-  application.close(() => {
-    logger.info('Successfully closed http server.');
-    powerOff();
-  });
-};
+  const service = new SocketService(context);
+  await service.connect('http://localhost:3002');
 
-const server = app.listen(config.APP.PORT, () => {
-  logger.info(`Server listening on port "${config.APP.PORT}".`);
-});
+  return service;
+}
 
-const killSignals = ['SIGTERM', 'SIGINT'] as const;
-killSignals.forEach((signal) =>
-  process.on(signal, () => shutDown(server, signal)),
-);
+async function main(): Promise<void> {
+  const socket = await createSocket();
+  const app = await createApp();
+  app.run();
+  await socket.sendGameInitialize();
+}
 
-// When uncaught exception occurs,
-// handle the error safely as a last resort
-process.on('uncaughtException', (err: Error) => {
-  logger.error(err.message);
-  if (server) {
-    shutDown(server, 'SIGINT');
-  } else {
-    powerOff();
-  }
-});
-
-// When uncaught promises rejections occurs,
-// handle the error safely as a last resort
-process.on('unhandledRejection', (reason: string) => {
-  logger.crit(reason);
-  if (server) {
-    shutDown(server, 'SIGINT');
-  } else {
-    powerOff();
-  }
-});
+window.addEventListener('load', main);

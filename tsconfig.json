@@ -17,5 +17,5 @@
       "strictPropertyInitialization": false,
       "noImplicitAny": true,
     },
-    "include": ["./apps/**/*.ts", "./packages/**/*.ts"]
+    "include": ["./apps/**/*.ts", "./packages/**/*.ts", "apps/game/webpack.mts", "apps/game/webpack.js", "apps/game/webpack.js"]
 }
