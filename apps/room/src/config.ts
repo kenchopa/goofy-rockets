@@ -31,14 +31,29 @@ type RabbitMQ = {
   HEARTBEAT: number;
 };
 
+type MongoDB = {
+  HOST: string;
+  PORT: number;
+  USER: string;
+  PASSWORD: string;
+  DB: string;
+};
+
 type Config = {
   APP: App;
   RABBITMQ: RabbitMQ;
+  MONGODB: MongoDB;
 };
 
 const configSchema = Joi.object({
   DOCS_URI: Joi.string().required(),
   LOG_LEVEL: Joi.string().required(),
+  MONGODB_DB: Joi.string().default('campaigns'),
+  MONGODB_HOST: Joi.string().default('localhost'),
+  MONGODB_OPTIONS: Joi.string().empty('').optional(),
+  MONGODB_PASSWORD: Joi.string().empty('').optional(),
+  MONGODB_PROTOCOL: Joi.string().default('mongodb'),
+  MONGODB_USER: Joi.string().empty('').optional(),
   NODE_ENV: Joi.string().required(),
   PORT: Joi.number().default(3000),
   RABBITMQ_EXCHANGE: Joi.string().required(),
@@ -66,10 +81,11 @@ const {
     RABBITMQ_EXCHANGE,
     RABBITMQ_HEARTBEAT,
     SERVICE_NAME,
-    REDIS_HOST,
-    REDIS_PORT,
-    REDIS_PASSWORD,
-    REDIS_DB,
+    MONGODB_DB,
+    MONGODB_HOST,
+    MONGODB_PASSWORD,
+    MONGODB_PORT,
+    MONGODB_USER,
   },
 } = configSchema.validate(process.env, {
   abortEarly: false,
@@ -90,6 +106,13 @@ const config: Config = {
     NODE_ENV,
     PORT,
     SERVICE_NAME,
+  },
+  MONGODB: {
+    DB: MONGODB_DB,
+    HOST: MONGODB_HOST,
+    PASSWORD: MONGODB_PASSWORD,
+    PORT: MONGODB_PORT,
+    USER: MONGODB_USER,
   },
   RABBITMQ: {
     EXCHANGE: RABBITMQ_EXCHANGE,

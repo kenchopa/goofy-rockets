@@ -21,6 +21,7 @@
     "@wgp/errors": "workspace:^",
     "@wgp/koa": "workspace:^",
     "@wgp/logger": "workspace:*",
+    "@wgp/mongodb": "workspace:^",
     "@wgp/tracer": "workspace:*",
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",

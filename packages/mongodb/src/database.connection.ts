@@ -6,6 +6,7 @@ const { connection }: { connection: Connection } = mongoose;
 interface MongoConnectParams {
   host: string;
   db: string;
+  port?: number;
   user: string;
   password: string;
   protocol?: string;
@@ -17,10 +18,11 @@ export const connectMongoDB = async ({
   db,
   user,
   password,
+  port = 27017,
   protocol = 'mongodb',
   options = '',
 }: MongoConnectParams): Promise<typeof mongoose> => {
-  const meta = JSON.stringify({ db, host, options, protocol, user });
+  const meta = JSON.stringify({ db, host, options, port, protocol, user });
 
   connection.on('error', (error) => logger.error(`MongoDB error - ${error}`));
   connection.on('open', () => logger.info(`MongoDB connected - ${meta}`));
@@ -32,7 +34,8 @@ export const connectMongoDB = async ({
 
   mongoose.set('strictQuery', true);
 
-  const connectionString = `${protocol}://${host}/${db}?${options}`;
+  // Add the port to the connection string
+  const connectionString = `${protocol}://${host}:${port}/${db}?${options}`;
   const connectOptions: ConnectOptions = {
     pass: password,
     user,

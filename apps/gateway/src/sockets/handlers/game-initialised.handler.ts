@@ -1,30 +1,44 @@
 import { publishMessage } from '@wgp/amqp';
 import logger from '@wgp/logger';
+import { jwtDecode } from 'jwt-decode';
 import { Server, Socket } from 'socket.io';
 
 import config from '../../config';
 
 type GameInitialisedPayload = {
-  gameId: string;
+  jwt: string;
+  correlation_id: string;
 };
 
-const GameInitialisedRoutingKey = 'game.initialised';
+const gameInitialisedRoutingKey = 'game.initialised';
+const roomsReceivedRoutingKey = 'rooms.received';
+const defaultRoom = 'wgp:room1';
 
-export default function registerGameInitialisedHandler(
+export default async function registerGameInitialisedHandler(
   server: Server,
   socket: Socket,
 ) {
   socket.on(
-    GameInitialisedRoutingKey,
+    gameInitialisedRoutingKey,
     async (payload: GameInitialisedPayload) => {
       try {
-        socket.join('room1');
+        const { jwt, correlation_id: correlationId } = payload;
+        const { uid, gid } = jwtDecode(jwt) as { uid: string; gid: string };
+        await socket.join(defaultRoom);
+        await socket.join(uid);
         await publishMessage(
           config.RABBITMQ.EXCHANGE_WO_IN,
-          GameInitialisedRoutingKey,
+          gameInitialisedRoutingKey,
           payload,
         );
-        logger.info(`Game "${payload.gameId}" initialised message published.`);
+        logger.info(`Game "${gid}" initialised message published.`);
+        socket.emit(roomsReceivedRoutingKey, {
+          correlationId,
+          data: {
+            rooms: [{ id: 'wgp:room1', joined: true }],
+          },
+          event: roomsReceivedRoutingKey,
+        });
       } catch (error: unknown) {
         socket.emit('error.occurred', { message: (error as Error).message });
       }
