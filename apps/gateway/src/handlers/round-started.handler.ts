@@ -4,6 +4,6 @@ import logger from '@wgp/logger';
 export default async function handleRoundStarted(
   message: Message,
 ): Promise<void> {
-  console.log('message', message);
+  logger.info('message', message);
   
 }
