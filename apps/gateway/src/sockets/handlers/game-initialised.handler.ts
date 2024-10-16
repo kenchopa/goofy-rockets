@@ -18,6 +18,7 @@ export default function registerGameInitialisedHandler(
     GameInitialisedRoutingKey,
     async (payload: GameInitialisedPayload) => {
       try {
+        socket.join('room1');
         await publishMessage(
           config.RABBITMQ.EXCHANGE_WO_IN,
           GameInitialisedRoutingKey,
