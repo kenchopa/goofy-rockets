@@ -68,7 +68,11 @@ export const transformObject = (
 
 export const transformObjects = (
   arr: TransformedObject[],
-): TransformedObject[] => _.map(arr, (x: unknown) => transformObject(x));
+): TransformedObject[] => {
+  return arr
+    .map((x: TransformedObject) => transformObject(x)) // Apply the transformation
+    .filter((x): x is TransformedObject => x !== null); // Filter out null values
+};
 
 // Export mongoose for external usage if needed
 export { mongoose };
