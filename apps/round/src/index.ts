@@ -1,14 +1,10 @@
-import { createAdapter } from '@socket.io/redis-streams-adapter';
 import { installQueueRouter, setupRabbitMQ } from '@wgp/amqp';
 import logger from '@wgp/logger';
-import http from 'http';
 import Koa from 'koa';
-import { Server as SocketIOServer } from 'socket.io';
 
 import config from './config';
-import redisClient, { connectRedis } from './infrastructure/redis.client';
+import { connectRedis } from './infrastructure/redis.client';
 import initializeMiddleware from './middleware';
-import registerSocketHandlers from './sockets';
 
 const startServer = async () => {
   const app = new Koa();
@@ -30,11 +26,11 @@ const startServer = async () => {
       installQueueRouter(
         channel,
         {
-          exchange: 'wo-out',
-          name: 'game.multiplier.updated',
+          exchange: 'wo-in',
+          name: 'round.room_created',
         },
         {
-          'game.multiplier.updated': async (message) => {
+          'room.created': async (message) => {
             logger.info('Received message:', message);
           },
         },
@@ -42,23 +38,8 @@ const startServer = async () => {
     ]),
   );
 
-  // Create a single HTTP server
-  const server = http.createServer(app.callback());
-
-  // Initialize Socket.IO with Redis Streams Adapter
-  const socketIOServer = new SocketIOServer(server, {
-    adapter: createAdapter(redisClient),
-    cors: {
-      methods: ['GET', 'POST'],
-      origin: '*', // Adjust this for security in production
-    },
-  });
-
-  // Register socket handlers
-  registerSocketHandlers(socketIOServer);
-
-  // Start the unified HTTP and Socket.IO server
-  server.listen(config.APP.PORT, () => {
+  // Create a HTTP server
+  const server = app.listen(config.APP.PORT, () => {
     logger.info(`Server listening on port "${config.APP.PORT}".`);
   });
 
@@ -68,11 +49,7 @@ const startServer = async () => {
     process.exit(0);
   };
 
-  const shutDown = (
-    application: any,
-    socketServer: SocketIOServer,
-    command: string,
-  ) => {
+  const shutDown = (application: any, command: string) => {
     logger.info(
       `Server shutdown requested (${command}). Finishing up requests and closing down.`,
     );
@@ -80,26 +57,21 @@ const startServer = async () => {
     // Close the HTTP server
     application.close(() => {
       logger.info('Successfully closed HTTP server.');
-
-      // Close the Socket.IO server
-      socketServer.close(() => {
-        logger.info('Successfully closed Socket.IO server.');
-        powerOff();
-      });
+      powerOff();
     });
   };
 
   // Gracefully handle termination signals
   const killSignals = ['SIGTERM', 'SIGINT'] as const;
   killSignals.forEach((signal) =>
-    process.on(signal, () => shutDown(server, socketIOServer, signal)),
+    process.on(signal, () => shutDown(server, signal)),
   );
 
   // When an uncaught exception occurs
   process.on('uncaughtException', (err: Error) => {
     logger.error(err.message);
-    if (server && socketIOServer) {
-      shutDown(server, socketIOServer, 'SIGINT');
+    if (server) {
+      shutDown(server, 'SIGINT');
     } else {
       powerOff();
     }
@@ -108,8 +80,8 @@ const startServer = async () => {
   // When uncaught promise rejections occur
   process.on('unhandledRejection', (reason: string) => {
     logger.crit(reason);
-    if (server && socketIOServer) {
-      shutDown(server, socketIOServer, 'SIGINT');
+    if (server) {
+      shutDown(server, 'SIGINT');
     } else {
       powerOff();
     }
