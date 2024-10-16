@@ -5,7 +5,7 @@ import Koa from 'koa';
 
 import config from './config';
 import handleGameInitialised from './handlers/game-initialised.handler';
-import handleGatewayRoomCreated from './handlers/gateway-room-created.handler';
+import handleSocketRoomCreated from './handlers/socket-room-created.handler';
 import initializeMiddleware from './middleware';
 
 const startServer = async () => {
@@ -40,10 +40,10 @@ const startServer = async () => {
         channel,
         {
           exchange: 'wo-in',
-          name: 'room.gateway-room-created',
+          name: 'room.socket-room-created',
         },
         {
-          'room.created': handleGatewayRoomCreated,
+          'room.created': handleSocketRoomCreated,
         },
       ),
     ]),
