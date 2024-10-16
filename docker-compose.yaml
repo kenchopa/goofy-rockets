@@ -16,3 +16,8 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+
+  mongo:
+    image: mongo:4.4.24
+    ports:
+      - 27017:27017
