@@ -34,13 +34,13 @@ cp .env.dist .env
 Compile TypeScript:
 
 ```
-pnpm gateway build
+pnpm room build
 ```
 
 Then start with node:
 
 ```
-pnpm gateway start
+pnpm room start
 ```
 
 ### Development setup
@@ -54,7 +54,7 @@ cp .env.dist .env
 For a development setup with ts-node and nodemon (server restart on changes):
 
 ```
-pnpm gateway dev
+pnpm room dev
 ```
 
 ### Scripts
@@ -62,59 +62,59 @@ pnpm gateway dev
 Building for production with clean-up before hand
 
 ```bash
-pnpm gateway build
+pnpm room build
 ```
 
 Clean up dist and coverage
 
 ```bash
-pnpm gateway clean
+pnpm room clean
 ```
 
 Run in debug mode
 
 ```bash
-pnpm gateway debug
+pnpm room debug
 ```
 
 Run in dev mode
 
 ```bash
-pnpm gateway dev
+pnpm room dev
 ```
 
 Run in production mode
 
 ```bash
-pnpm gateway start
+pnpm room start
 ```
 
 Run functional tests
 
 ```bash
-pnpm gateway test
+pnpm room test
 ```
 
 Run functional tests with coverage
 
 ```bash
-pnpm gateway test:coverage
+pnpm room test:coverage
 ```
 
 Run end to end tests
 
 ```bash
-pnpm gateway test:e2e
+pnpm room test:e2e
 ```
 
 Run lint in dry run mode
 
 ```bash
-pnpm gateway lint
+pnpm room lint
 ```
 
 Run lint fix mode
 
 ```bash
-pnpm gateway lint:fix
+pnpm room lint:fix
 ```
