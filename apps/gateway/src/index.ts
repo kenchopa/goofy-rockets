@@ -1,5 +1,5 @@
 import { createAdapter } from '@socket.io/redis-streams-adapter';
-import { installQueueRouter, setupRabbitMQ } from '@wgp/amqp';
+import { setupRabbitMQ } from '@wgp/amqp';
 import logger from '@wgp/logger';
 import http from 'http';
 import Koa from 'koa';
@@ -25,22 +25,7 @@ const startServer = async () => {
   }
 
   // Setup RabbitMQ
-  await setupRabbitMQ((channel) =>
-    Promise.all([
-      installQueueRouter(
-        channel,
-        {
-          exchange: 'wo-out',
-          name: 'game.multiplier.updated',
-        },
-        {
-          'game.multiplier.updated': async (message) => {
-            logger.info('Received message:', message);
-          },
-        },
-      ),
-    ]),
-  );
+  await setupRabbitMQ((channel) => Promise.all([]));
 
   // Create a single HTTP server
   const server = http.createServer(app.callback());
