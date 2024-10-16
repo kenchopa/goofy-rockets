@@ -71,6 +71,9 @@ importers:
       '@types/uuid':
         specifier: ^10.0.0
         version: 10.0.0
+      '@wgp/domain':
+        specifier: workspace:^
+        version: link:../../packages/domain
       '@wgp/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -362,6 +365,8 @@ importers:
   packages/context: {}
 
   packages/delayer: {}
+
+  packages/domain: {}
 
   packages/errors: {}
 

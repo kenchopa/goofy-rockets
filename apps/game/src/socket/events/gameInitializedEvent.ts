@@ -1,15 +1,16 @@
 /* eslint-disable no-console */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable import/prefer-default-export */
-import { socketEvents } from '../constants/socketEvents';
+import { socketEventNames } from '@wgp/domain';
+
 import { SocketContext } from '../socketContext';
 import { SocketEvent } from '../types/socketEvent';
 
 export class GameInitializedEvent implements SocketEvent {
-  constructor(public readonly context: SocketContext) {}
+  constructor(public readonly context: SocketContext) { }
 
   public get id(): string {
-    return socketEvents.game.initialized;
+    return socketEventNames.game.initialized;
   }
 
   public handler(...args: unknown[]): void {

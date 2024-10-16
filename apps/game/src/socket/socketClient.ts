@@ -11,7 +11,7 @@ export class SocketClient {
 
   constructor(
     private readonly context: { eventContainer: SocketEventContainer },
-  ) {}
+  ) { }
 
   public init(uri: string): void {
     this.context.eventContainer.events.onAdd =
@@ -94,6 +94,7 @@ export class SocketClient {
       console.warn('unable to send socket data, socket not connected');
       return false;
     }
+    console.log('sending socket message', event, msg);
     this.socket.emit(event, msg);
     return true;
   }

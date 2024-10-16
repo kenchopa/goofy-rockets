@@ -8,7 +8,7 @@ import { SocketMessageContainer } from './socketMessageContainer';
 export class SocketMessageConsumer {
   constructor(
     private context: { socketMessageContainer: SocketMessageContainer },
-  ) {}
+  ) { }
 
   public consumeMessage(msg: unknown): void {
     if (!_.has(msg, 'correlationId') || !_.has(msg, 'data')) {
@@ -25,6 +25,7 @@ export class SocketMessageConsumer {
         payloadMessage.correlationId,
       );
     pendingMessage.messages.push(payloadMessage.data);
+
     // TODO check required responses and resolve if all are received
     /*
     pendingMessage.forEach((v) => {

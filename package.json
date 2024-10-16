@@ -19,6 +19,7 @@
     "logger": "cross-env pnpm --filter @wgp/logger",
     "tracer": "cross-env pnpm --filter @wgp/tracer",
     "mongodb": "cross-env pnpm --filter @wgp/mongodb",
+    "domain": "cross-env pnpm --filter @wgp/domain",
     "build:packages": "cross-env pnpm --filter './packages/**' --recursive run build",
     "build:apps": "cross-env pnpm --filter './apps/**' --recursive run build",
     "build": "cross-env pnpm run build:packages && cross-env pnpm run build:apps",

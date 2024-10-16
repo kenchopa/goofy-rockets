@@ -1,13 +1,13 @@
 /* eslint-disable no-void */
 /* eslint-disable import/prefer-default-export */
+import { socketEventNames } from '@wgp/domain';
 import * as uuid from 'uuid';
 
 import { playerSessionToken } from './constants/playerSessionToken';
-import { socketEvents } from './constants/socketEvents';
 import { SocketContext } from './socketContext';
 
 export class SocketService {
-  constructor(private readonly context: SocketContext) {}
+  constructor(private readonly context: SocketContext) { }
 
   public connect(uri: string): Promise<void> {
     console.log('connecting to socket', uri);
@@ -31,12 +31,12 @@ export class SocketService {
         res(result);
       });
       const messageSend = this.context.socketClient.send(
-        socketEvents.game.initialize,
+        socketEventNames.game.initialize,
         {
           correlationId,
-          data: {
-            playerSessionToken,
-          },
+          data: {},
+          event: socketEventNames.game.initialized,
+          jwt: playerSessionToken,
         },
       );
 
