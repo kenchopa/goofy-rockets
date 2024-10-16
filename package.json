@@ -14,7 +14,7 @@
     "context": "pnpm --filter @wgp/context",
     "delayer": "pnpm --filter @wgp/delayer",
     "errors": "pnpm --filter @wgp/errors",
-    "koa" : "pnpm --filter @wgp/koa",
+    "koa": "pnpm --filter @wgp/koa",
     "logger": "pnpm --filter @wgp/logger",
     "tracer": "pnpm --filter @wgp/tracer",
     "build:packages": "pnpm --filter './packages/**' --recursive run build",
@@ -48,5 +48,6 @@
     "rimraf": "^4.1.2",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
-  }
+  },
+  "packageManager": "pnpm@9.12.1+sha512.e5a7e52a4183a02d5931057f7a0dbff9d5e9ce3161e33fa68ae392125b79282a8a8a470a51dfc8a0ed86221442eb2fb57019b0990ed24fab519bf0e1bc5ccfc4"
 }
