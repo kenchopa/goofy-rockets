@@ -1,0 +1,39 @@
+{
+  "name": "@wgp/player",
+  "description": "Contains a microservice that handles players for project Goofy Rockets",
+  "main": "src/index.ts",
+  "scripts": {
+    "prebuild": "pnpm run clean",
+    "build": "tsc",
+    "clean": "rimraf dist coverage",
+    "debug": "nodemon --watch src --ext js,ts,json --watch .env --delay 80ms --exec 'tsc && NODE_ENV=development node --inspect=0.0.0.0:9229 dist/index.js'",
+    "dev": "nodemon --watch .env --delay 80ms --watch src --ext js,ts,json --exec 'NODE_ENV=development ts-node src/index.ts'",
+    "prestart": "pnpm run build",
+    "start": "NODE_ENV=production node dist/src/index.js",
+    "test": "NODE_ENV=test jest --no-coverage --runInBand",
+    "test:coverage": "NODE_ENV=test jest",
+    "lint": "eslint src/**/* --ext js,ts",
+    "lint:fix": "pnpm run lint -- --fix"
+  },
+  "dependencies": {
+    "@socket.io/redis-streams-adapter": "^0.2.2",
+    "@wgp/amqp": "workspace:^",
+    "@wgp/context": "workspace:^",
+    "@wgp/errors": "workspace:^",
+    "@wgp/koa": "workspace:^",
+    "@wgp/logger": "workspace:*",
+    "@wgp/tracer": "workspace:*",
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.0.3",
+    "joi": "^17.7.0",
+    "jsonwebtoken": "^9.0.2",
+    "koa": "^2.14.1",
+    "opentracing": "^0.14.7",
+    "redis": "^4.7.0",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/koa": "^2.13.5"
+  }
+}
