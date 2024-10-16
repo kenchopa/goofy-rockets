@@ -10,7 +10,7 @@ export class GameInitializedEvent implements SocketEvent {
   constructor(public readonly context: SocketContext) { }
 
   public get id(): string {
-    return socketEventNames.game.initialized;
+    return socketEventNames.game.initialised;
   }
 
   public handler(...args: unknown[]): void {

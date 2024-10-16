@@ -31,11 +31,11 @@ export class SocketService {
         res(result);
       });
       const messageSend = this.context.socketClient.send(
-        socketEventNames.game.initialize,
+        socketEventNames.game.initialised,
         {
           correlationId,
           data: {},
-          event: socketEventNames.game.initialized,
+          event: socketEventNames.game.initialised,
           jwt: playerSessionToken,
         },
       );

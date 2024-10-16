@@ -1,7 +1,6 @@
 const socketEventNames = {
   game: {
-    initialize: 'game.initialize',
-    initialized: 'game.initialized',
+    initialised: 'game.initialised',
   },
   rooms: {
     received: 'rooms.received',
