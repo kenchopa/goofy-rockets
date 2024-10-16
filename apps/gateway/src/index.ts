@@ -1,5 +1,5 @@
 import { createAdapter } from '@socket.io/redis-streams-adapter';
-import { setupRabbitMQ } from '@wgp/amqp';
+import { installQueueRouter, setupRabbitMQ } from '@wgp/amqp';
 import logger from '@wgp/logger';
 import http from 'http';
 import Koa from 'koa';
@@ -9,6 +9,8 @@ import config from './config';
 import redisClient, { connectRedis } from './infrastructure/redis.client';
 import initializeMiddleware from './middleware';
 import registerSocketHandlers from './sockets';
+import handleRoundStarted from './handlers/round-started.handler';
+import handleRoundEnded from './handlers/round-ended.handler';
 
 const startServer = async () => {
   const app = new Koa();
@@ -25,7 +27,30 @@ const startServer = async () => {
   }
 
   // Setup RabbitMQ
-  await setupRabbitMQ((channel) => Promise.all([]));
+  setupRabbitMQ((channel) =>
+    Promise.all([
+      installQueueRouter(
+        channel,
+        {
+          exchange: 'wo-out',
+          name: 'gateway.round-started',
+        },
+        {
+          'round.started': handleRoundStarted,
+        },
+      ),
+      installQueueRouter(
+        channel,
+        {
+          exchange: 'wo-out',
+          name: 'gateway.round-ended',
+        },
+        {
+          'round.ended': handleRoundEnded,
+        },
+      ),
+    ]),
+  );
 
   // Create a single HTTP server
   const server = http.createServer(app.callback());
