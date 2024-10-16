@@ -7,7 +7,7 @@ import config from '../../config';
 
 type GameInitialisedPayload = {
   jwt: string;
-  correlation_id: string;
+  correlationId: string;
 };
 
 const gameInitialisedRoutingKey = 'game.initialised';
@@ -22,7 +22,7 @@ export default async function registerGameInitialisedHandler(
     gameInitialisedRoutingKey,
     async (payload: GameInitialisedPayload) => {
       try {
-        const { jwt, correlation_id: correlationId } = payload;
+        const { jwt, correlationId } = payload;
         const { uid, gid } = jwtDecode(jwt) as { uid: string; gid: string };
         await socket.join(defaultRoom);
         await socket.join(uid);
