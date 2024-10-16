@@ -29,8 +29,6 @@ type RabbitMQ = {
   VHOST: string;
   EXCHANGE: string;
   HEARTBEAT: number;
-  EXCHANGE_WO_IN: 'wo-in';
-  EXCHANGE_WO_OUT: 'wo-out';
 };
 
 type Redis = {
@@ -107,8 +105,6 @@ const config: Config = {
   },
   RABBITMQ: {
     EXCHANGE: RABBITMQ_EXCHANGE,
-    EXCHANGE_WO_IN: 'wo-in',
-    EXCHANGE_WO_OUT: 'wo-out',
     HEARTBEAT: RABBITMQ_HEARTBEAT,
     HOST: RABBITMQ_HOST,
     PASSWORD: RABBITMQ_PASSWORD,

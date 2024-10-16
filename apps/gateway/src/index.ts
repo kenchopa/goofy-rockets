@@ -9,6 +9,8 @@ import config from './config';
 import redisClient, { connectRedis } from './infrastructure/redis.client';
 import initializeMiddleware from './middleware';
 import registerSocketHandlers from './sockets';
+import handleRoundStarted from './handlers/round-started.handler';
+import handleRoundEnded from './handlers/round-ended.handler';
 
 const startServer = async () => {
   const app = new Koa();
@@ -31,12 +33,20 @@ const startServer = async () => {
         channel,
         {
           exchange: 'wo-out',
-          name: 'game.multiplier.updated',
+          name: 'gateway.round-started',
         },
         {
-          'game.multiplier.updated': async (message) => {
-            logger.info('Received message:', message);
-          },
+          'round.started': handleRoundStarted,
+        },
+      ),
+      installQueueRouter(
+        channel,
+        {
+          exchange: 'wo-out',
+          name: 'gateway.round-ended',
+        },
+        {
+          'round.ended': handleRoundEnded,
         },
       ),
     ]),

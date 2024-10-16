@@ -1,0 +1,16 @@
+{
+  "name": "@wgp/mongodb",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "prebuild": "pnpm run clean",
+    "build": "tsc",
+    "clean": "rimraf dist coverage"
+  },
+  "dependencies": {
+    "@wgp/logger": "workspace:^",
+    "mongoose": "^8.7.1"
+  },
+  "devDependencies": {
+    "@types/mongoose": "^5.11.97"
+  }
+}

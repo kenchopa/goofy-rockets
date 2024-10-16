@@ -29,21 +29,11 @@ type RabbitMQ = {
   VHOST: string;
   EXCHANGE: string;
   HEARTBEAT: number;
-  EXCHANGE_WO_IN: 'wo-in';
-  EXCHANGE_WO_OUT: 'wo-out';
-};
-
-type Redis = {
-  HOST: string;
-  PASSWORD: string;
-  DB: number;
-  PORT: number;
 };
 
 type Config = {
   APP: App;
   RABBITMQ: RabbitMQ;
-  REDIS: Redis;
 };
 
 const configSchema = Joi.object({
@@ -58,10 +48,6 @@ const configSchema = Joi.object({
   RABBITMQ_PORT: Joi.number().required(),
   RABBITMQ_USER: Joi.string().required(),
   RABBITMQ_VHOST: Joi.string().required(),
-  REDIS_DB: Joi.number().default(0),
-  REDIS_HOST: Joi.string().required(),
-  REDIS_PASSWORD: Joi.string().required(),
-  REDIS_PORT: Joi.number().default(6379),
   SERVICE_NAME: Joi.string().required(),
 });
 
@@ -107,20 +93,12 @@ const config: Config = {
   },
   RABBITMQ: {
     EXCHANGE: RABBITMQ_EXCHANGE,
-    EXCHANGE_WO_IN: 'wo-in',
-    EXCHANGE_WO_OUT: 'wo-out',
     HEARTBEAT: RABBITMQ_HEARTBEAT,
     HOST: RABBITMQ_HOST,
     PASSWORD: RABBITMQ_PASSWORD,
     PORT: RABBITMQ_PORT,
     USER: RABBITMQ_USER,
     VHOST: RABBITMQ_VHOST,
-  },
-  REDIS: {
-    DB: REDIS_DB,
-    HOST: REDIS_HOST,
-    PASSWORD: REDIS_PASSWORD,
-    PORT: REDIS_PORT,
   },
 };
 
