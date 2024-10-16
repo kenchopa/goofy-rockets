@@ -139,9 +139,6 @@ importers:
 
   apps/room:
     dependencies:
-      '@socket.io/redis-streams-adapter':
-        specifier: ^0.2.2
-        version: 0.2.2(socket.io-adapter@2.5.5)
       '@wgp/amqp':
         specifier: workspace:^
         version: link:../../packages/amqp
@@ -178,9 +175,6 @@ importers:
       redis:
         specifier: ^4.7.0
         version: 4.7.0
-      socket.io:
-        specifier: ^4.7.5
-        version: 4.7.5
     devDependencies:
       '@types/koa':
         specifier: ^2.13.5
