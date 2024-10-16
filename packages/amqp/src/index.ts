@@ -5,3 +5,4 @@ export {
   type QueueOptions,
   default as installQueueRouter,
 } from './queue.router';
+export type { Message } from 'amqplib';
