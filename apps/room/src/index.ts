@@ -15,13 +15,13 @@ const startServer = async () => {
   initializeMiddleware(app);
 
   // Setup MongoDB
-  await connectMongoDB({
-    db: config.MONGODB.DB,
-    host: config.MONGODB.HOST,
-    password: config.MONGODB.PASSWORD,
-    port: config.MONGODB.PORT,
-    user: config.MONGODB.USER,
-  });
+  // await connectMongoDB({
+  //   db: config.MONGODB.DB,
+  //   host: config.MONGODB.HOST,
+  //   password: config.MONGODB.PASSWORD,
+  //   port: config.MONGODB.PORT,
+  //   user: config.MONGODB.USER,
+  // });
 
   // Setup RabbitMQ
   await setupRabbitMQ((channel) =>

@@ -5,42 +5,30 @@ import { Server, Socket } from 'socket.io';
 
 import config from '../../config';
 
-type GameInitialisedPayload = {
+type GameInteractedPayload = {
   jwt: string;
   correlationId: string;
 };
 
-const gameInitialisedRoutingKey = 'game.initialised';
-const roomsReceivedRoutingKey = 'rooms.received';
+const gameInteractedRoutingKey = 'game.interacted';
 const balanceReceivedRoutingKey = 'balance.received';
-const defaultRoom = 'wgp:game:goofy-rockets:room1';
 
 export default async function registerGameInitialisedHandler(
   server: Server,
   socket: Socket,
 ) {
   socket.on(
-    gameInitialisedRoutingKey,
-    async (payload: GameInitialisedPayload) => {
+    gameInteractedRoutingKey,
+    async (payload: GameInteractedPayload) => {
       try {
         const { jwt, correlationId } = payload;
-        const { uid, gid } = jwtDecode(jwt) as { uid: string; gid: string };
-        socket.data.uid = uid;
-        socket.data.gid = gid;
-        await socket.join(defaultRoom);
+        const { gid } = jwtDecode(jwt) as { uid: string; gid: string };
         await publishMessage(
           config.RABBITMQ.EXCHANGE_WO_IN,
-          gameInitialisedRoutingKey,
+          gameInteractedRoutingKey,
           payload,
         );
-        logger.info(`Game "${gid}" initialised message published.`);
-        socket.emit(roomsReceivedRoutingKey, {
-          correlationId,
-          data: {
-            rooms: [{ id: defaultRoom, joined: true }],
-          },
-          event: roomsReceivedRoutingKey,
-        });
+        logger.info(`Game "${gid}" interacted message published.`);
         socket.emit(balanceReceivedRoutingKey, {
           correlationId,
           data: {
