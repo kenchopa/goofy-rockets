@@ -22,7 +22,11 @@ const config: Webpack.Configuration & WebpackDevServer.Configuration = {
     static: [
       { directory: Path.join(__dirname, '..', 'dist') },
       { directory: Path.join(__dirname, '..', 'src') },
+      { directory: Path.join(__dirname, '..', 'public') },
     ],
+    server: {
+      type: 'https',
+    },
   },
   devtool: 'source-map',
   entry: {

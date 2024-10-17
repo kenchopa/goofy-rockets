@@ -9,9 +9,15 @@ export class DocumentHandler {
 
   public init() {
     const canvasData = this.createCanvas();
-    this.canvasContext = canvasData.ctx;
+    this.canvasContext = canvasData.ctx as WebGL2RenderingContext;
     this.canvas = canvasData.canvas;
     this.element = this.getElement('gameArea');
+    this.element.appendChild(this.canvas);
+
+    this.canvas.style.margin = 'auto';
+    this.canvas.style.display = 'block';
+    this.canvas.style.height = '100%';
+    this.canvas.style.width = '100%';
   }
 
   private getElement(id: string): HTMLElement {
@@ -25,11 +31,11 @@ export class DocumentHandler {
   }
 
   private createCanvas(): {
-    ctx: WebGL2RenderingContext;
+    ctx: unknown;
     canvas: HTMLCanvasElement;
   } {
     const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('webgl2', {
+    const ctx = canvas.getContext('webgpu', {
       stencil: true,
     });
     if (ctx === null) {

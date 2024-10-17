@@ -16,7 +16,7 @@ export class SocketMessageContainer {
   public addPendingMessage(
     id: string,
     requiredResponses: string[],
-    resolver: (msg: unknown) => void,
+    resolver: (msgs: SocketEventResponse[]) => void,
     rejecter: (msg: unknown) => void,
   ): void {
     this.pendingResults.push({

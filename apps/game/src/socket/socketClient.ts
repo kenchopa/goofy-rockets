@@ -29,7 +29,6 @@ export class SocketClient {
     if (!this.socket) {
       return;
     }
-    console.log('adding socket event', event.eventName);
     this.socket.on(event.eventName, event.handler.bind(event));
   }
 
