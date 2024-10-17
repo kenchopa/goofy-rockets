@@ -14,49 +14,6 @@ const registerSocketHandlers = (server: Server) => {
     await registerGameInitialisedHandler(server, socket);
   });
 
-  server.of('/').adapter.on('create-room', async (roomId) => {
-    if (roomId.includes('wgp:')) {
-      const parts = roomId.split(':');
-      logger.info(`room ${roomId} was created`);
-
-      const RoomCreatedRoutingKey = 'room.created';
-
-      const gameId = parts[2];
-      const payload = {
-        gameId,
-        roomId,
-      };
-
-      await publishMessage(
-        config.RABBITMQ.EXCHANGE_WO_IN,
-        RoomCreatedRoutingKey,
-        payload,
-      );
-    }
-  });
-
-  server.of('/').adapter.on('join-room', async (roomId, socketId) => {
-    if (roomId.includes('wgp:')) {
-      logger.info(`socket ${socketId} has joined room ${roomId}`);
-
-      const { uid, gid } = server.sockets.sockets.get(socketId) as any;
-
-      const RoomPlayerJoinedRoutingKey = 'room.player-joined';
-
-      const payload = {
-        gameId: gid,
-        playerId: uid,
-        roomId,
-      };
-
-      await publishMessage(
-        config.RABBITMQ.EXCHANGE_WO_IN,
-        RoomPlayerJoinedRoutingKey,
-        payload,
-      );
-    }
-  });
-
   server.of('/').adapter.on('leave-room', async (roomId, socketId) => {
     if (roomId.includes('wgp:')) {
       logger.info(`socket ${socketId} has left room ${roomId}`);

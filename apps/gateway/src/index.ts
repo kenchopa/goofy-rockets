@@ -1,7 +1,5 @@
-import { createAdapter } from '@socket.io/redis-streams-adapter';
 import { installQueueRouter, setupRabbitMQ } from '@wgp/amqp';
 import logger from '@wgp/logger';
-import http from 'http';
 import Koa from 'koa';
 import { Server as SocketIOServer } from 'socket.io';
 
@@ -9,8 +7,9 @@ import config from './config';
 import redisClient, { connectRedis } from './infrastructure/redis.client';
 import initializeMiddleware from './middleware';
 import registerSocketHandlers from './sockets';
-import handleRoundStarted from './handlers/round-started.handler';
-import handleRoundEnded from './handlers/round-ended.handler';
+import { createServer } from './server';
+import { createSocketServer } from './socket';
+import handleRoomsReceived from './handlers/rooms-received.handler';
 
 const startServer = async () => {
   const app = new Koa();
@@ -27,42 +26,24 @@ const startServer = async () => {
   }
 
   // Setup RabbitMQ
-  setupRabbitMQ((channel) =>
+  await setupRabbitMQ((channel) =>
     Promise.all([
       installQueueRouter(
         channel,
         {
           exchange: 'wo-out',
-          name: 'gateway.round-started',
+          name: 'rooms.received',
         },
         {
-          'round.started': handleRoundStarted,
-        },
-      ),
-      installQueueRouter(
-        channel,
-        {
-          exchange: 'wo-out',
-          name: 'gateway.round-ended',
-        },
-        {
-          'round.ended': handleRoundEnded,
+          'rooms.received': handleRoomsReceived,
         },
       ),
     ]),
   );
 
-  // Create a single HTTP server
-  const server = http.createServer(app.callback());
+  const server = createServer(app);
 
-  // Initialize Socket.IO with Redis Streams Adapter
-  const socketIOServer = new SocketIOServer(server, {
-    adapter: createAdapter(redisClient),
-    cors: {
-      methods: ['GET', 'POST'],
-      origin: '*', // Adjust this for security in production
-    },
-  });
+  const socketIOServer = createSocketServer(server, redisClient);
 
   // Register socket handlers
   registerSocketHandlers(socketIOServer);
