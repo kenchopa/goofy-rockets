@@ -1,4 +1,4 @@
-import { BaseEvent } from '@wgp/domain';
+import { BaseEvent } from '@wgp/amqp';
 
 import { Room } from '../models/room.model';
 

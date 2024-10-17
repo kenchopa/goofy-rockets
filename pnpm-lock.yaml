@@ -283,6 +283,9 @@ importers:
       joi:
         specifier: ^17.7.0
         version: 17.13.3
+      jwt-decode:
+        specifier: ^4.0.0
+        version: 4.0.0
       koa:
         specifier: ^2.14.1
         version: 2.15.3
@@ -363,10 +366,16 @@ importers:
       amqplib:
         specifier: ^0.10.4
         version: 0.10.4
+      uuid:
+        specifier: ^10.0.0
+        version: 10.0.0
     devDependencies:
       '@types/amqplib':
         specifier: ^0.10.5
         version: 0.10.5
+      '@types/uuid':
+        specifier: ^10.0.0
+        version: 10.0.0
       type-fest:
         specifier: ^4.26.1
         version: 4.26.1

@@ -19,6 +19,10 @@ export class RoomRepository {
     return RoomModel.findOne({ roomId }).exec();
   }
 
+  async getRoomsByGameId(gameId: string): Promise<Room[]> {
+    return RoomModel.find({ gameId }).exec();
+  }
+
   // Get all rooms
   async getAllRooms(): Promise<Room[]> {
     return RoomModel.find().exec();
