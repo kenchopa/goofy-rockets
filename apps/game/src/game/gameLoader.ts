@@ -7,7 +7,7 @@ import { ChickenHurtAsset } from './assets/chickenHurtAsset';
 import { EndChickenAsset } from './assets/endChickenAsset';
 
 export class GameLoader {
-  public sprites: Record<string, Pixi.Sprite> = {};
+  public sprites: Record<string, () => Pixi.Sprite> = {};
 
   private readonly loader = Pixi.Assets;
 
@@ -25,7 +25,7 @@ export class GameLoader {
             loadParser: 'loadTextures',
             src: asset.url,
           });
-          this.sprites[asset.id] = Pixi.Sprite.from(asset.url);
+          this.sprites[asset.id] = () => Pixi.Sprite.from(asset.url);
         }
       }),
     );

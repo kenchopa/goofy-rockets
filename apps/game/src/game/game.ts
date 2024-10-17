@@ -6,13 +6,24 @@ import { LaneChickenMediator } from './laneChickenMediator';
 export class Game {
   public readonly loader = new GameLoader();
 
-  public async init(app: AppService): Promise<void> {
+  private lanes: LaneChickenMediator[] = [];
+
+  constructor(public readonly app: AppService) { }
+
+  public async init(): Promise<void> {
     await this.loader.load();
+  }
 
-    const laneMediator = new LaneChickenMediator(this, 0);
+  public addLane(): LaneChickenMediator {
+    const lane = new LaneChickenMediator(this, this.lanes.length);
+    this.lanes.push(lane);
+    this.app.stage.addChild(lane.view);
+    return lane;
+  }
 
-    laneMediator.reset();
-
-    app.stage.addChild(laneMediator.view);
+  public resetGame(): void {
+    this.lanes.forEach((lane) => {
+      lane.reset();
+    });
   }
 }

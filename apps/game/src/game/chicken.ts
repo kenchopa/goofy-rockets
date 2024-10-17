@@ -15,10 +15,10 @@ export class Chicken extends Pixi.Container {
 
   private textureHurt!: Pixi.Sprite;
 
-  constructor(game: Game) {
+  constructor(game: Game, isPlayerLane: boolean) {
     super();
-    this.textureDefault = game.loader.sprites[ChickenDefaultAsset.id];
-    this.textureHurt = game.loader.sprites[ChickenHurtAsset.id];
+    this.textureDefault = game.loader.sprites[ChickenDefaultAsset.id]();
+    this.textureHurt = game.loader.sprites[ChickenHurtAsset.id]();
 
     this.textureDefault.anchor.set(0.5, 0.5);
     this.textureDefault.scale.set(0.06, 0.06);
@@ -28,6 +28,12 @@ export class Chicken extends Pixi.Container {
 
     this.addChild(this.textureDefault);
     this.addChild(this.textureHurt);
+
+    if (!isPlayerLane) {
+      const color = Math.floor(Math.random() * 16777215).toString(16);
+      this.textureDefault.tint = parseInt(color, 16);
+      this.textureHurt.tint = parseInt(color, 16);
+    }
 
     this.setStateDefault();
   }

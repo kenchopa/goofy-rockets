@@ -22,6 +22,8 @@ export class LaneChickenMediator {
     this.lane = new BackgroundLane();
     this.view.addChild(this.lane);
 
+    this.view.position.set(0, this.laneId * this.lane.laneHeight);
+
     let xPos = this.lane.startSize + this.lane.laneWidth * 0.5;
     for (let i = 0; i < this.lane.lanes; i++) {
       const laneElement = new LaneElement(i === this.lane.lanes - 1);
@@ -32,7 +34,7 @@ export class LaneChickenMediator {
       this.laneElements.push(laneElement);
     }
 
-    this.endChicken = game.loader.sprites[EndChickenAsset.id];
+    this.endChicken = game.loader.sprites[EndChickenAsset.id]();
     this.view.addChild(this.endChicken);
     this.endChicken.anchor.set(0.5, 0.5);
     this.endChicken.scale.set(0.07, 0.07);
@@ -43,7 +45,7 @@ export class LaneChickenMediator {
       this.lane.laneHeight / 2,
     );
 
-    this.chicken = new Chicken(game);
+    this.chicken = new Chicken(game, this.playerLane);
     this.view.addChild(this.chicken);
 
     this.reset();
@@ -63,7 +65,9 @@ export class LaneChickenMediator {
 
   public setChickenOnLaneStep(laneStep: number): void {
     this.chicken.position.set(
-      this.lane.startSize + this.lane.laneWidth * laneStep,
+      this.lane.startSize +
+      this.lane.laneWidth * 0.5 +
+      this.lane.laneWidth * laneStep,
       this.lane.height / 2,
     );
   }
