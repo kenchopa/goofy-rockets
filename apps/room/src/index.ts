@@ -5,7 +5,6 @@ import Koa from 'koa';
 
 import config from './config';
 import handleGameInitialised from './handlers/game-initialised.handler';
-import handleSocketRoomCreated from './handlers/socket-room-created.handler';
 import initializeMiddleware from './middleware';
 
 const startServer = async () => {
@@ -15,13 +14,13 @@ const startServer = async () => {
   initializeMiddleware(app);
 
   // Setup MongoDB
-  // await connectMongoDB({
-  //   db: config.MONGODB.DB,
-  //   host: config.MONGODB.HOST,
-  //   password: config.MONGODB.PASSWORD,
-  //   port: config.MONGODB.PORT,
-  //   user: config.MONGODB.USER,
-  // });
+  await connectMongoDB({
+    db: config.MONGODB.DB,
+    host: config.MONGODB.HOST,
+    password: config.MONGODB.PASSWORD,
+    port: config.MONGODB.PORT,
+    user: config.MONGODB.USER,
+  });
 
   // Setup RabbitMQ
   await setupRabbitMQ((channel) =>
@@ -34,16 +33,6 @@ const startServer = async () => {
         },
         {
           'game.initialised': handleGameInitialised,
-        },
-      ),
-      installQueueRouter(
-        channel,
-        {
-          exchange: 'wo-in',
-          name: 'room.socket-room-created',
-        },
-        {
-          'room.created': handleSocketRoomCreated,
         },
       ),
     ]),
