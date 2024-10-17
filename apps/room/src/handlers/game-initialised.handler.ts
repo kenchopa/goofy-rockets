@@ -10,7 +10,7 @@ import { jwtDecode } from 'jwt-decode';
 import config from '../config';
 import RoomCreatedEvent from '../events/room-created.event';
 import RoomsReceivedEvent from '../events/rooms-received.event';
-import roundRepository from '../repositories/round.repository';
+import roomRepository from '../repositories/room.repository';
 
 type GameInitialisedContent = {
   jwt: string;
@@ -32,7 +32,7 @@ export default async function handleGameInitialised(
 
   // when a game is initialised, we try to get the first room for the game
   // for now, we only support one room per game
-  const rooms = await roundRepository.getRoomsByGameId(gameId);
+  const rooms = await roomRepository.getRoomsByGameId(gameId);
   if (rooms.length > 0) {
     const room = rooms[0]; // for now, we only support one room per game
     const roomsReceivedEvent = new RoomsReceivedEvent(
@@ -46,7 +46,7 @@ export default async function handleGameInitialised(
   }
 
   // when no room is found, we create a new room
-  const room = await roundRepository.createRoom(gameId, roomId, []);
+  const room = await roomRepository.createRoom(gameId, roomId, []);
   const roomCreatedEvent = new RoomCreatedEvent(
     config.APP.SERVICE_NAME,
     room,
