@@ -8,17 +8,9 @@ import logger from '@wgp/logger';
 
 import { socketIOServer } from '../socket';
 
-// type RoomsReceivedContent = {
-//   gameId: string;
-//   roomId: string;
-//   users: string[];
-//   createdAt: string;
-//   updatedAt: string;
-// };
+const roomPlayerJoinedRoutingKey = 'room.player.joined';
 
-const roomsReceivedRoutingKey = 'rooms.received';
-
-export default async function handleRoomsReceived(
+export default async function handleRoomPlayerJoined(
   message: Message,
 ): Promise<void> {
   const content = getContentFromMessage(message) as any;
@@ -26,12 +18,12 @@ export default async function handleRoomsReceived(
     message,
   ) as MessageHeaders;
   const socket = socketIOServer.of('/').sockets.get(socketId as string);
-  socket?.emit(roomsReceivedRoutingKey, {
+  socket?.emit(roomPlayerJoinedRoutingKey, {
     correlationId,
     data: {
-      rooms: content,
+      room: content,
     },
-    event: roomsReceivedRoutingKey,
+    event: roomPlayerJoinedRoutingKey,
   });
-  logger.info('Rooms.received message emitted');
+  logger.info('Rooms.player.joined message emitted');
 }
