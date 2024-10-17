@@ -27,8 +27,10 @@ type RabbitMQ = {
   USER: string;
   PASSWORD: string;
   VHOST: string;
-  EXCHANGE: string;
   HEARTBEAT: number;
+  EXCHANGE_WO_IN: string;
+  EXCHANGE_WO_INTERNAL: string;
+  EXCHANGE_WO_OUT: string;
 };
 
 type MongoDB = {
@@ -56,7 +58,6 @@ const configSchema = Joi.object({
   MONGODB_USER: Joi.string().empty('').optional(),
   NODE_ENV: Joi.string().required(),
   PORT: Joi.number().default(3000),
-  RABBITMQ_EXCHANGE: Joi.string().required(),
   RABBITMQ_HEARTBEAT: Joi.number().required(),
   RABBITMQ_HOST: Joi.string().required(),
   RABBITMQ_PASSWORD: Joi.string().required(),
@@ -78,7 +79,6 @@ const {
     RABBITMQ_PASSWORD,
     RABBITMQ_USER,
     RABBITMQ_VHOST,
-    RABBITMQ_EXCHANGE,
     RABBITMQ_HEARTBEAT,
     SERVICE_NAME,
     MONGODB_DB,
@@ -115,7 +115,9 @@ const config: Config = {
     USER: MONGODB_USER,
   },
   RABBITMQ: {
-    EXCHANGE: RABBITMQ_EXCHANGE,
+    EXCHANGE_WO_IN: 'wo-in',
+    EXCHANGE_WO_INTERNAL: 'wo-internal',
+    EXCHANGE_WO_OUT: 'wo-out',
     HEARTBEAT: RABBITMQ_HEARTBEAT,
     HOST: RABBITMQ_HOST,
     PASSWORD: RABBITMQ_PASSWORD,

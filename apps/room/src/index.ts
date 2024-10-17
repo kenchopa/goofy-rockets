@@ -5,7 +5,6 @@ import Koa from 'koa';
 
 import config from './config';
 import handleGameInitialised from './handlers/game-initialised.handler';
-import handleSocketRoomCreated from './handlers/socket-room-created.handler';
 import initializeMiddleware from './middleware';
 
 const startServer = async () => {
@@ -34,16 +33,6 @@ const startServer = async () => {
         },
         {
           'game.initialised': handleGameInitialised,
-        },
-      ),
-      installQueueRouter(
-        channel,
-        {
-          exchange: 'wo-in',
-          name: 'room.socket-room-created',
-        },
-        {
-          'room.created': handleSocketRoomCreated,
         },
       ),
     ]),

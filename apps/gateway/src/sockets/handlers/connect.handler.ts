@@ -6,5 +6,4 @@ export default async function registerConnectHandler(
   socket: Socket,
 ) {
   logger.info(`Player "${socket.id}" connected.`);
-  await socket.join('wgp:room1');
 }

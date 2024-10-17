@@ -6,4 +6,5 @@ const socketEventNames = {
     received: 'rooms.received',
   },
 };
+
 export default socketEventNames;
