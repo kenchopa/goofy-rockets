@@ -9,8 +9,5 @@
   "dependencies": {
     "@wgp/logger": "workspace:^",
     "mongoose": "^8.7.1"
-  },
-  "devDependencies": {
-    "@types/mongoose": "^5.11.97"
   }
 }
