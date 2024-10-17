@@ -22,7 +22,7 @@ export default async function handleGameInitialised(
   message: Message,
 ): Promise<void> {
   const content = getContentFromMessage(message) as GameInitialisedContent;
-  const headers = getHeadersFromMessage(message);
+  const headers = getHeadersFromMessage(message) as MessageHeaders;
 
   const { jwt } = content;
   const { gid: gameId } = jwtDecode(jwt) as { gid: string };
@@ -39,7 +39,7 @@ export default async function handleGameInitialised(
       config.APP.SERVICE_NAME,
       [room],
       new Date(),
-      headers as MessageHeaders,
+      headers,
     );
     await roomsReceivedEvent.publish(config.RABBITMQ.EXCHANGE_WO_OUT);
     return;
@@ -51,7 +51,7 @@ export default async function handleGameInitialised(
     config.APP.SERVICE_NAME,
     room,
     new Date(),
-    headers as MessageHeaders,
+    headers,
   );
   // publish the room created event to wo-internal
   await roomCreatedEvent.publish(config.RABBITMQ.EXCHANGE_WO_INTERNAL);
@@ -61,7 +61,7 @@ export default async function handleGameInitialised(
     config.APP.SERVICE_NAME,
     [room],
     new Date(),
-    headers as MessageHeaders,
+    headers,
   );
   await roomsReceivedEvent.publish(config.RABBITMQ.EXCHANGE_WO_OUT);
 }
