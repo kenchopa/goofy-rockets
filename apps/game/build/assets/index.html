@@ -13,6 +13,22 @@
       margin-top: 50px;
     }
 
+    .bet-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 2px;
+    }
+    
+    .bet-box {
+      display: flex;
+      flex-direction: column; /* Stack the input and buttons vertically */
+      align-items: center; /* Center items within the div */
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 400px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: add shadow for better visual */
+    }
+
     .multiplier {
       font-size: 48px;
       color: green;
@@ -22,26 +38,32 @@
       color: red;
     }
 
-    #betInput {
+    #betInput1, #betInput2 {
       padding: 10px;
       font-size: 16px;
       margin: 10px;
     }
 
-    #placeBetBtn,
-    #cashOutBtn {
-      padding: 10px 20px;
-      font-size: 18px;
+    #placeBetBtn1,#placeBetBtn2,
+    #nextStepBtn1,#nextStepBtn2,
+    #cashOutBtn1, #cashOutBtn2 {
+      padding: 8px 16px;
+      font-size: 16px;
       cursor: pointer;
       margin: 10px;
     }
 
-    #placeBetBtn {
+    #placeBetBtn1, #placeBetBtn2 {
       background-color: #4CAF50;
       color: white;
     }
 
-    #cashOutBtn {
+    #nextStepBtn1, #nextStepBtn2 {
+      background-color: #af9d4c;
+      color: white;
+    }
+
+    #cashOutBtn1, #cashOutBtn2 {
       background-color: #f44336;
       color: white;
     }
@@ -66,16 +88,33 @@
   <h1>Goofy Rockets</h1>
   <div id="multiplier" class="multiplier">1.00x</div>
 
-  <div>
-    <input type="number" id="betInput" placeholder="Enter bet amount" min="1" />
-    <button id="placeBetBtn">Place Bet</button>
-    <button id="cashOutBtn" disabled>Cash Out</button>
+  <div class="bet-container">
+    <div class="bet-box">
+      <input type="number" id="betInput1" placeholder="Enter bet amount" min="1" />
+      <div>
+        <button id="placeBetBtn1">Place Bet</button>
+        <button id="nextStepBtn1">Next Step</button>
+        <button id="cashOutBtn1" disabled>Cash Out</button>
+      </div>
+    </div>
+    <div class="bet-box">
+      <input type="number" id="betInput2" placeholder="Enter bet amount" min="1" />
+      <div>
+        <button id="placeBetBtn2">Place Bet</button>
+        <button id="nextStepBtn2">Next Step</button>
+        <button id="cashOutBtn2" disabled>Cash Out</button>
+      </div>
+    </div>
   </div>
 
   <div id="message"></div>
 
   <!-- Canvas Container -->
   <div id="gameArea"></div>
+  <div>
+    <ul id="events-list">
+    </ul>
+  </div>
 </body>
 
 </html>
