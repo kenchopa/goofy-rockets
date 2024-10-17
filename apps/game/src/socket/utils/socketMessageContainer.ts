@@ -1,14 +1,17 @@
 /* eslint-disable import/prefer-default-export */
+import { SocketEventResponse } from '@wgp/domain';
 import _ from 'lodash';
 
+export interface PendingMessage {
+  id: string;
+  requiredResponses: string[];
+  messages: SocketEventResponse[];
+  resolver: (msg: SocketEventResponse[]) => void;
+  rejecter: (msg: unknown) => void;
+}
+
 export class SocketMessageContainer {
-  private pendingResults: {
-    id: string;
-    requiredResponses: string[];
-    messages: unknown[];
-    resolver: (msg: unknown) => void;
-    rejecter: (msg: unknown) => void;
-  }[] = [];
+  private pendingResults: PendingMessage[] = [];
 
   public addPendingMessage(
     id: string,
@@ -29,12 +32,7 @@ export class SocketMessageContainer {
     _.remove(this.pendingResults, (v) => v.id === id);
   }
 
-  public findPendingMessage(id: string): {
-    id: string;
-    resolver: (msg: unknown) => void;
-    requiredResponses: string[];
-    messages: unknown[];
-  } {
-    return _.find(this.pendingResults, (v) => v.id === id)!;
+  public findPendingMessage(id: string): PendingMessage | undefined {
+    return _.find(this.pendingResults, (v) => v.id === id);
   }
 }

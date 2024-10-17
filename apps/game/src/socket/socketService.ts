@@ -10,7 +10,6 @@ export class SocketService {
   constructor(private readonly context: SocketContext) { }
 
   public connect(uri: string): Promise<void> {
-    console.log('connecting to socket', uri);
     this.context.socketClient.init(uri);
     return this.context.socketClient.connect();
   }
@@ -21,7 +20,7 @@ export class SocketService {
       const p = new Promise<unknown>((resP, rej) => {
         this.context.socketMessageContainer.addPendingMessage(
           correlationId,
-          [],
+          [socketEventNames.rooms.received],
           resP as (msg: unknown) => void,
           rej,
         );

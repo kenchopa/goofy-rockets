@@ -6,9 +6,9 @@ import { socketEventNames, SocketEventResponse } from '@wgp/domain';
 import { SocketContext } from '../socketContext';
 import { SocketEvent } from '../types/socketEvent';
 
-export class GameInitializedEvent extends SocketEvent {
+export class RoomsReceivedEvent extends SocketEvent {
   constructor(context: SocketContext) {
-    super(context, socketEventNames.game.initialised);
+    super(context, socketEventNames.rooms.received);
   }
 
   public handler(...args: SocketEventResponse[]): void {

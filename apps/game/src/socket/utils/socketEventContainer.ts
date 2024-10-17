@@ -7,31 +7,24 @@ import { type SocketEvent } from '../types/socketEvent';
 export class SocketEventContainer {
   public readonly socketEvents: SocketEvent[] = [];
 
-  public events: {
-    onRemove: (event: SocketEvent) => void;
-    onAdd: (event: SocketEvent) => void;
-  } = {
-    onAdd: _.noop.bind(undefined),
-    onRemove: _.noop.bind(undefined),
-  };
-
   public add(event: SocketEvent): boolean {
-    if (this.has(event.id)) {
+    if (this.has(event.eventName)) {
       return false;
     }
     this.socketEvents.push(event);
     return true;
   }
 
-  public remove(eventId: string): SocketEvent | undefined {
-    const index = this.socketEvents.findIndex((v) => v.id === eventId);
+  public remove(eventName: string): SocketEvent | undefined {
+    const index = this.socketEvents.findIndex((v) => v.eventName === eventName);
     if (index < 0) {
       return;
     }
-    return this.socketEvents.splice(index, 1)[0];
+    const event = this.socketEvents.splice(index, 1)[0];
+    return event;
   }
 
-  public has(eventId: string): boolean {
-    return !!this.socketEvents.find((v) => v.id === eventId);
+  public has(eventName: string): boolean {
+    return !!this.socketEvents.find((v) => v.eventName === eventName);
   }
 }
