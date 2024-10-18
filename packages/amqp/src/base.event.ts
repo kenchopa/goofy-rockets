@@ -33,9 +33,9 @@ export default abstract class BaseEvent<T> {
     this.occurredOn = occurredOn || new Date();
 
     const extendedHeaders = {
+      ...headers,
       source,
       version: '1',
-      ...headers,
     };
 
     this.headers = extendedHeaders;
