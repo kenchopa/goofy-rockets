@@ -3,6 +3,7 @@ export {
   type JSONObject,
   type MessageHeaders,
   type MessagePayload,
+  type MessageProperties,
   checkHealth,
   publishMessage,
   default as setupRabbitMQ,

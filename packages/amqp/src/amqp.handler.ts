@@ -151,12 +151,21 @@ export interface JSONArray
 // Define the type for the message payload which must always be an object (key-value)
 export type MessagePayload = JSONObject;
 
+export type MessageProperties = {
+  headers?: MessageHeaders;
+  persistent?: boolean;
+  contentType?: string;
+  contentEncoding?: string;
+  messageId?: string;
+  timestamp?: number;
+  appId?: string;
+};
+
 export const publishMessage = async (
   exchange: string,
   routingKey: string,
   message: MessagePayload,
-  headers?: MessageHeaders,
-  options = { persistent: true },
+  properties: MessageProperties = {},
 ): Promise<void> => {
   if (!channel) {
     throw new Error('No channel available for publishing messages.');
@@ -165,13 +174,20 @@ export const publishMessage = async (
   return new Promise((resolve, reject) => {
     try {
       const messageBuffer = Buffer.from(JSON.stringify(message));
-      const publishOptions = { ...options, headers };
-
+      const options = {
+        appId: properties.appId,
+        contentEncoding: properties.contentEncoding ?? 'utf-8',
+        contentType: properties.contentType ?? 'application/json',
+        headers: properties.headers,
+        messageId: properties.messageId,
+        persistent: properties.persistent ?? true,
+        timestamp: properties.timestamp,
+      };
       const success = channel.publish(
         exchange,
         routingKey,
         messageBuffer,
-        publishOptions,
+        options,
       );
 
       if (!success) {
