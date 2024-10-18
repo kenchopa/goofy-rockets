@@ -1,6 +1,11 @@
 import { v4 as uuidV4 } from 'uuid';
 
-import { MessageHeaders, MessagePayload, publishMessage } from './amqp.handler';
+import {
+  MessageHeaders,
+  MessagePayload,
+  MessageProperties,
+  publishMessage,
+} from './amqp.handler';
 
 const convertDateToUnixTimestamp = (date: Date) =>
   Math.floor(date.getTime() / 1000);
@@ -16,6 +21,8 @@ export default abstract class BaseEvent<T> {
 
   headers?: MessageHeaders;
 
+  private properties?: MessageProperties;
+
   constructor(
     source: string,
     payload: T,
@@ -24,26 +31,19 @@ export default abstract class BaseEvent<T> {
   ) {
     this.payload = payload;
     this.occurredOn = occurredOn || new Date();
-    this.headers = {
-      ...headers,
-      contentType: 'application/json',
-      messageId: uuidV4(),
-      source,
-      timestamp: convertDateToUnixTimestamp(this.occurredOn),
-      version: '1',
-    };
-  }
 
-  // This method creates the event structure to be published
-  createMessage(): {
-    payload: MessagePayload;
-    headers: MessageHeaders;
-    routingKey: string;
-  } {
-    return {
-      headers: this.headers!,
-      payload: this.payload as unknown as MessagePayload,
-      routingKey: this.routingKey,
+    const extendedHeaders = {
+      source,
+      version: '1',
+      ...headers,
+    };
+
+    this.headers = extendedHeaders;
+    this.properties = {
+      contentType: 'application/json',
+      headers: extendedHeaders,
+      messageId: uuidV4(),
+      timestamp: convertDateToUnixTimestamp(this.occurredOn),
     };
   }
 
@@ -53,7 +53,7 @@ export default abstract class BaseEvent<T> {
       exchange,
       this.routingKey,
       this.payload as unknown as MessagePayload,
-      this.headers,
+      this.properties,
     );
   }
 
